@@ -147,6 +147,57 @@
       text-shadow: 0 1px 12px #1391e6;
     }
 
+    /* Fake loader overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .overlay h2 {
+      color: white;
+      margin-bottom: 15px;
+    }
+    .progress-bar {
+      width: 80%;
+      height: 18px;
+      background-color: #444;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .progress {
+      height: 100%;
+      width: 0%;
+      background-color: #2196f3;
+      transition: width 0.4s ease;
+    }
+    .megabytes {
+      margin-bottom: 20px;
+      color: #ccc;
+    }
+    .verify-box {
+      background: #2e2e2e;
+      padding: 14px 20px;
+      border-radius: 12px;
+      color: white;
+      font-size: 16px;
+      display: none;
+    }
+    .verify-box a {
+      color: #00eaff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
     /* Animations */
     @keyframes fadeInDown {
       0% { opacity: 0; transform: translateY(-30px);}
@@ -218,6 +269,16 @@
   </style>
 </head>
 <body>
+  <!-- Fake loader overlay -->
+  <div class="overlay" id="loader">
+    <h2>Downloading...</h2>
+    <div class="progress-bar"><div class="progress" id="progress"></div></div>
+    <div class="megabytes" id="megabytes">0 MB / 45 MB</div>
+    <div class="verify-box" id="verify">
+      <a href="https://locked4.com/cl/v/99govp" target="_blank">Complete a quick offer to unlock the game.</a>
+    </div>
+  </div>
+
   <header>
     <h1>B2PGAMES</h1>
   </header>
@@ -229,56 +290,56 @@
         <img class="game-img" src="https://play-lh.googleusercontent.com/a7R5nyeaX8lIEWdBOxjlvbyq9LcFwh3XMvNtBPEKR3LPGgdvgGrec4sJwn8tUaaSkw=w240-h480-rw">
         <div class="game-title">Galaxy Shooter</div>
         <div class="game-desc">A fast-paced space shooter. Defeat enemies, upgrade ships, and save the universe!</div>
-        <button class="download-btn" onclick="window.location.href='https://locked4.com/cl/v/99govp'">Download</button>
+        <button class="download-btn" onclick="startDownload()">Download</button>
       </div>
       <!-- Game 2 -->
       <div class="game-card">
         <img class="game-img" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=200&q=80" alt="Puzzle Master Game">
         <div class="game-title">Puzzle Master</div>
         <div class="game-desc">Challenge your brain with hundreds of unique puzzles for all skill levels.</div>
-        <button class="download-btn" onclick="window.location.href='https://locked4.com/cl/v/99govp'">Download</button>
+        <button class="download-btn" onclick="startDownload()">Download</button>
       </div>
       <!-- Game 3 -->
       <div class="game-card">
         <img class="game-img" src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=200&q=80" alt="Racing Rivals Game">
         <div class="game-title">Racing Rivals</div>
         <div class="game-desc">Race against players worldwide. Unlock cars, win trophies, and become a champion!</div>
-        <button class="download-btn" onclick="window.location.href='https://locked4.com/cl/v/99govp'">Download</button>
+        <button class="download-btn" onclick="startDownload()">Download</button>
       </div>
       <!-- Game 4 -->
       <div class="game-card">
         <img class="game-img" src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=200&q=80" alt="Jungle Adventure Game">
         <div class="game-title">Jungle Adventure</div>
         <div class="game-desc">Explore mysterious jungles, collect coins, and overcome tricky obstacles.</div>
-        <button class="download-btn" onclick="window.location.href='https://locked4.com/cl/v/99govp'">Download</button>
+        <button class="download-btn" onclick="startDownload()">Download</button>
       </div>
       <!-- Game 5 -->
       <div class="game-card">
         <img class="game-img" src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=200&q=80" alt="Zombie Survival Game">
         <div class="game-title">Zombie Survival</div>
         <div class="game-desc">Survive waves of zombies in this thrilling action-packed adventure.</div>
-        <button class="download-btn" onclick="window.location.href='https://locked4.com/cl/v/99govp'">Download</button>
+        <button class="download-btn" onclick="startDownload()">Download</button>
       </div>
       <!-- Game 6 -->
       <div class="game-card">
         <img class="game-img" src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=200&q=80" alt="Fantasy Quest Game">
         <div class="game-title">Fantasy Quest</div>
         <div class="game-desc">Embark on an epic journey in a magical world full of quests and treasures.</div>
-        <button class="download-btn" onclick="window.location.href='https://locked4.com/cl/v/99govp'">Download</button>
+        <button class="download-btn" onclick="startDownload()">Download</button>
       </div>
       <!-- Game 7 -->
       <div class="game-card">
         <img class="game-img" src="https://images.unsplash.com/photo-1454023492550-5696f8ff10e1?auto=format&fit=crop&w=200&q=80" alt="Soccer Stars Game">
         <div class="game-title">Soccer Stars</div>
         <div class="game-desc">Play exciting soccer matches, build your team, and climb the global ranks!</div>
-        <button class="download-btn" onclick="window.location.href='https://locked4.com/cl/v/99govp'">Download</button>
+        <button class="download-btn" onclick="startDownload()">Download</button>
       </div>
       <!-- Game 8 -->
       <div class="game-card">
         <img class="game-img" src="https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?auto=format&fit=crop&w=200&q=80" alt="Candy Crush Saga Game">
         <div class="game-title">Candy Crush Saga</div>
         <div class="game-desc">Match candies, solve tricky puzzles, and enjoy sweet fun in this classic game!</div>
-        <button class="download-btn" onclick="window.location.href='https://locked4.com/cl/v/99govp'">Download</button>
+        <button class="download-btn" onclick="startDownload()">Download</button>
       </div>
     </section>
   </main>
@@ -317,7 +378,7 @@
     </svg>
   </footer>
 
-  <!-- Animation on scroll (vanilla JS) -->
+  <!-- Animation on scroll (vanilla JS) and Fake Loader Script -->
   <script>
     // Animate cards on scroll
     document.addEventListener('DOMContentLoaded', function() {
@@ -338,6 +399,35 @@
       window.addEventListener('scroll', animateOnScroll);
       animateOnScroll();
     });
+
+    // Fake loader logic for download
+    let loader = document.getElementById('loader');
+    let progressBar = document.getElementById('progress');
+    let megabytes = document.getElementById('megabytes');
+    let verify = document.getElementById('verify');
+
+    function startDownload() {
+      loader.style.display = 'flex';
+      progressBar.style.width = '0%';
+      verify.style.display = 'none';
+      megabytes.textContent = '0 MB / 450 MB';
+
+      let progress = 0;
+      let mb = 0;
+      let interval = setInterval(() => {
+        if (progress >= 75) {
+          clearInterval(interval);
+          verify.style.display = 'block';
+          return;
+        }
+        progress += Math.random() * 5;
+        mb += Math.floor(Math.random() * 4 + 2);
+        if (progress > 75) progress = 75;
+        if (mb > 34) mb = 34;
+        progressBar.style.width = progress + '%';
+        megabytes.textContent = `${mb} MB / 450 MB`;
+      }, 300);
+    }
   </script>
 </body>
 </html>
