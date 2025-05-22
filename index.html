@@ -554,6 +554,49 @@
     B2PGAMES &copy; All rights reserved.
   </footer>
   <script>
+   footer {
+  background: #171e28;
+  color: #fff;
+  text-align: center;
+  padding: 18px 0 11px 0;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0 -4px 24px 0 #212c4033;
+  font-size: 0.96rem;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  z-index: 10;
+  transition: bottom 0.4s;
+}
+footer.footer-hidden {
+  bottom: -80px;
+}
+    let lastScroll = 0;
+let header = document.getElementById('mainHeader');
+let footer = document.querySelector('footer');
+window.addEventListener('scroll', function() {
+  const currentScroll = window.scrollY;
+
+  // Header: Hide on scroll down, show on scroll up
+  if (currentScroll > lastScroll && currentScroll > 60) {
+    header.style.top = '-80px';
+  } else {
+    header.style.top = '0';
+  }
+
+  // Footer: Hide on scroll UP, Show on scroll DOWN
+  if (currentScroll < lastScroll && currentScroll > 60) {
+    // Scrolling up
+    footer.classList.add('footer-hidden');
+  } else {
+    // Scrolling down or at top
+    footer.classList.remove('footer-hidden');
+  }
+
+  lastScroll = currentScroll;
+});
     // HEADER: Hide on scroll down, show on scroll up
     let lastScroll = 0, header = document.getElementById('mainHeader');
     window.addEventListener('scroll', function() {
