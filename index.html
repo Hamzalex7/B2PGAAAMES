@@ -41,6 +41,9 @@
       transition: top 0.4s;
       text-align: center;
     }
+    .main-header.hide-header {
+      top: -80px;
+    }
     .main-header h1 {
       font-size: 2rem;
       font-weight: 900;
@@ -53,6 +56,27 @@
     @media (max-width:600px) {
       .main-header h1 { font-size: 1.2rem; }
       .main-header { padding-top: 12px; border-bottom-left-radius: 26px; border-bottom-right-radius: 26px; }
+    }
+    /* Footer style */
+    footer {
+      background: var(--dark);
+      color: #fff;
+      text-align: center;
+      padding: 18px 0 11px 0;
+      border-top-left-radius: 38px;
+      border-top-right-radius: 38px;
+      box-shadow: 0 -4px 24px 0 #212c4033;
+      font-size: 0.96rem;
+      animation: fadeInUp 1.3s;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100vw;
+      z-index: 10;
+      transition: bottom 0.4s;
+    }
+    footer.hide-footer {
+      bottom: -80px;
     }
     .games-grid {
       display: grid;
@@ -378,27 +402,6 @@
       80% { transform: scale(0.98);}
       100% { transform: scale(1);}
     }
-    /* Footer */
-    footer {
-      background: var(--dark);
-      color: #fff;
-      text-align: center;
-      padding: 18px 0 11px 0;
-      border-top-left-radius: var(--radius);
-      border-top-right-radius: var(--radius);
-      box-shadow: 0 -4px 24px 0 #212c4033;
-      font-size: 0.96rem;
-      animation: fadeInUp 1.3s;
-      position: fixed;
-      left: 0;
-      bottom: -80px;
-      width: 100vw;
-      z-index: 10;
-      transition: bottom 0.4s;
-    }
-    footer.footer-visible {
-      bottom: 0;
-    }
   </style>
 </head>
 <body>
@@ -553,30 +556,33 @@
     </div>
   </div>
 
-  <footer>
+  <footer id="mainFooter">
     B2PGAMES &copy; All rights reserved.
   </footer>
   <script>
-    // HEADER: Hide on scroll down, show on scroll up
-    let lastScroll = 0;
-    let header = document.getElementById('mainHeader');
-    let footer = document.querySelector('footer');
+    // HEADER & FOOTER: Show/hide on scroll (opposite directions)
+    let lastScroll = window.scrollY;
+    const header = document.getElementById('mainHeader');
+    const footer = document.getElementById('mainFooter');
+
     window.addEventListener('scroll', function() {
       const currentScroll = window.scrollY;
-      // Header logic
-      if (currentScroll > lastScroll && currentScroll > 60) {
-        header.style.top = '-80px';
-      } else {
-        header.style.top = '0';
-      }
-      lastScroll = currentScroll;
 
-      // Footer: show only when close to top
-      if (window.scrollY < 150) {
-        footer.classList.add('footer-visible');
+      // Header: Hide on scroll down, show on scroll up
+      if (currentScroll > lastScroll && currentScroll > 60) {
+        header.classList.add('hide-header');
       } else {
-        footer.classList.remove('footer-visible');
+        header.classList.remove('hide-header');
       }
+
+      // Footer: Show on scroll up, hide on scroll down
+      if (currentScroll < lastScroll && currentScroll > 60) {
+        footer.classList.remove('hide-footer');
+      } else {
+        footer.classList.add('hide-footer');
+      }
+
+      lastScroll = currentScroll;
     });
 
     // READ MORE for card descriptions
