@@ -379,20 +379,26 @@
       100% { transform: scale(1);}
     }
     /* Footer */
-   footer {
-  background: var(--dark);
-  color: #fff;
-  text-align: center;
-  padding: 18px 0 11px 0;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  box-shadow: 0 -4px 24px 0 #212c4033;
-  font-size: 0.96rem;
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100vw;
-  z-index: 10;
+    footer {
+      background: var(--dark);
+      color: #fff;
+      text-align: center;
+      padding: 18px 0 11px 0;
+      border-top-left-radius: var(--radius);
+      border-top-right-radius: var(--radius);
+      box-shadow: 0 -4px 24px 0 #212c4033;
+      font-size: 0.96rem;
+      animation: fadeInUp 1.3s;
+      position: fixed;
+      left: 0;
+      bottom: -80px;
+      width: 100vw;
+      z-index: 10;
+      transition: bottom 0.4s;
+    }
+    footer.footer-visible {
+      bottom: 0;
+    }
   </style>
 </head>
 <body>
@@ -551,20 +557,26 @@
     B2PGAMES &copy; All rights reserved.
   </footer>
   <script>
-    // HEADER AND FOOTER: Hide on scroll up / show on scroll down
+    // HEADER: Hide on scroll down, show on scroll up
     let lastScroll = 0;
     let header = document.getElementById('mainHeader');
     let footer = document.querySelector('footer');
     window.addEventListener('scroll', function() {
       const currentScroll = window.scrollY;
-      // Header: Hide on scroll down, show on scroll up
+      // Header logic
       if (currentScroll > lastScroll && currentScroll > 60) {
         header.style.top = '-80px';
       } else {
         header.style.top = '0';
       }
-      // Footer: Hide on scroll UP, Show on scroll DOWN
       lastScroll = currentScroll;
+
+      // Footer: show only when close to top
+      if (window.scrollY < 150) {
+        footer.classList.add('footer-visible');
+      } else {
+        footer.classList.remove('footer-visible');
+      }
     });
 
     // READ MORE for card descriptions
