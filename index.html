@@ -154,28 +154,6 @@
       background: none;
       border: none;
     }
-    .download-btn {
-      background: linear-gradient(90deg, #111, #181e28 90%);
-      color: #fff;
-      border: none;
-      border-radius: 18px;
-      padding: 7px 16px;
-      font-size: 0.94rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 1px 6px #1e90ff11;
-      transition: background var(--transition), transform var(--transition);
-      outline: none;
-      animation: bounceIn 1.1s;
-      margin-top: auto;
-      letter-spacing: 0.2px;
-    }
-    .download-btn:hover {
-      background: linear-gradient(90deg, #222, #111);
-      transform: scale(1.045);
-      color: #fff;
-      text-shadow: 0 1px 10px #1391e6;
-    }
     /* Modal Styles */
     .modal-overlay {
       display: none;
@@ -269,25 +247,42 @@
       margin-top: 1px;
       font-weight: 500;
     }
-    .modal-download-btn {
-      display: block;
+    .modal-download-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
       width: 82%;
       margin: 13px auto 0 auto;
-      padding: 10px 0;
-      background: linear-gradient(90deg, #ff5e62 0%, #ff9966 100%);
+    }
+    .modal-download-btns a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: #fff;
       border: none;
       border-radius: 22px;
       font-size: 1.07rem;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 2px 20px #ffae6e36;
+      box-shadow: 0 2px 20px #8882;
       transition: background .22s, transform .18s;
       letter-spacing: 0.8px;
+      padding: 10px 0;
+      text-decoration: none;
+      margin-bottom: 0;
     }
-    .modal-download-btn:hover {
-      background: linear-gradient(90deg, #ff9966 0%, #ff5e62 100%);
-      transform: scale(1.025);
+    .modal-download-btns a.android {
+      background: linear-gradient(90deg, #3ddc84 0%, #1cb960 100%);
+      box-shadow: 0 2px 20px #3ddc8414;
+      margin-bottom: 4px;
+    }
+    .modal-download-btns a.ios {
+      background: linear-gradient(90deg, #333 0%, #888 100%);
+    }
+    .modal-download-btns img {
+      height: 22px;
+      width: 22px;
+      margin-right: 10px;
     }
     .modal-about {
       margin: 11px 16px 0 16px;
@@ -418,7 +413,8 @@
         data-img="https://i.pinimg.com/736x/f6/d9/c4/f6d9c419a2abe5b5bb4b7b570e8c74ce.jpg"
         data-preview="https://i.pinimg.com/736x/f6/59/4d/f6594dedd69fe7a11608890c2c180e35.jpg"
         data-desc="GTA V (Grand Theft Auto V) is a critically acclaimed open-world game developed by Rockstar Games. Experience the high-stakes life of three unique criminals in the sprawling city of Los Santos."
-        data-cpa="https://locked4.com/cl/v/99govp"
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
       >
         <img class="game-img" src="https://i.pinimg.com/736x/b8/e1/8e/b8e18e6be3f2d04729717afd4e656556.jpg" alt="GTA V">
         <div class="game-title">GTA V MOBILE</div>
@@ -430,7 +426,8 @@
         data-img="https://play-lh.googleusercontent.com/R0qgNDYYHbRhw6JFsdEbDMqONplEvJx0m0W9wzYVvY3eNF1c2rfBWYjQxW0sLEzFe1E=w100-h100-rw"
         data-preview="https://i.pinimg.com/736x/a4/76/de/a476dead47f432001050d0bccd61c164.jpg"
         data-desc="Block Blast is a free and popular block puzzle game, your best choice for fun and casual challenge!"
-        data-cpa="https://locked4.com/cl/v/99govp"
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
       >
         <img class="game-img" src="https://play-lh.googleusercontent.com/R0qgNDYYHbRhw6JFsdEbDMqONplEvJx0m0W9wzYVvY3eNF1c2rfBWYjQxW0sLEzFe1E=w100-h100-rw" alt="BLOCK BLAST">
         <div class="game-title">BLOCK BLAST</div>
@@ -441,10 +438,11 @@
         data-title="WATCH DOGS 2"
         data-img="https://i.pinimg.com/736x/4b/75/8f/4b758f0f9f19847e672d6e4ead739531.jpg"
         data-preview="https://i.pinimg.com/736x/60/11/ee/6011eedfcbfe656415269ffd7e56e780.jpg"
-        data-desc=""
-        data-cpa="https://locked4.com/cl/v/99govp"
+        data-desc="Watch Dogs 2 is one of, if not the singular best open-world experience of all time. A carefully crafted world with some of the most clever dialogue and..."
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
       >
-        <img class="game-img" src="https://i.pinimg.com/736x/4b/75/8f/4b758f0f9f19847e672d6e4ead739531.jpg" alt="Racing Rivals">
+        <img class="game-img" src="https://i.pinimg.com/736x/4b/75/8f/4b758f0f9f19847e672d6e4ead739531.jpg" alt="WATCH DOGS 2">
         <div class="game-title">WATCH DOGS 2</div>
         <div class="game-desc">Watch Dogs 2 is one of, if not the singular best open-world experience of all time. A carefully crafted world with some of the most clever dialogue and...</div>
         <button class="download-btn">Download</button>
@@ -453,34 +451,37 @@
         data-title="BRAWL STARS MOD"
         data-img="https://i.pinimg.com/736x/a0/37/23/a03723616f549fab2fd5f15a30b7a07c.jpg"
         data-preview="https://i.pinimg.com/736x/89/e0/9d/89e09d4da1114064b5a78c7c14dae6c9.jpg"
-        data-desc=""
-        data-cpa="https://locked4.com/cl/v/99govp"
+        data-desc="This Brawl Stars mod includes private servers and offline versions of the game with new star powers, skins, and brawlers..."
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
       >
-        <img class="game-img" src="https://i.pinimg.com/736x/1d/32/e6/1d32e637b5fafaf5b154aaf2f10f6ebf.jpg">
+        <img class="game-img" src="https://i.pinimg.com/736x/1d/32/e6/1d32e637b5fafaf5b154aaf2f10f6ebf.jpg" alt="BRAWL STARS MOD">
         <div class="game-title">BRAWL STARS MOD</div>
-        <div class="game-desc">this Brawl Stars mod include private servers and offline versions of the game with new star powers, skins, and brawlers...</div>
+        <div class="game-desc">This Brawl Stars mod includes private servers and offline versions of the game with new star powers, skins, and brawlers...</div>
         <button class="download-btn">Download</button>
       </div>
       <div class="game-card"
         data-title="BASEBALL9 MOD"
         data-img="https://i.pinimg.com/736x/9f/d8/e0/9fd8e08e24dc17b299aa8e040973535d.jpg"
         data-preview="https://i.pinimg.com/736x/b6/a1/fc/b6a1fce608cb0c6159ac8666866db527.jpg"
-        data-desc=""
-        data-cpa="https://locked4.com/cl/v/99govp"
+        data-desc="Explore BASEBALL9 mod, free coins, and everything is free..."
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
       >
-        <img class="game-img" src="https://i.pinimg.com/736x/9f/d8/e0/9fd8e08e24dc17b299aa8e040973535d.jpg" alt="Jungle Adventure">
+        <img class="game-img" src="https://i.pinimg.com/736x/9f/d8/e0/9fd8e08e24dc17b299aa8e040973535d.jpg" alt="BASEBALL9 MOD">
         <div class="game-title">BASEBALL9 MOD</div>
-        <div class="game-desc">Explore baseball9 mod, free coins, and everything is free...</div>
+        <div class="game-desc">Explore BASEBALL9 mod, free coins, and everything is free...</div>
         <button class="download-btn">Download</button>
       </div>
       <div class="game-card"
         data-title="BEAMNG DRIVE"
         data-img="https://i.pinimg.com/736x/dc/f3/a5/dcf3a5f0a7e78293ffe264b5cc9c60f2.jpg"
         data-preview="https://i.pinimg.com/736x/cb/d0/f5/cbd0f564020eeb252814bc15403828f6.jpg"
-        data-desc=""
-        data-cpa="https://locked4.com/cl/v/99govp"
+        data-desc="Experience the thrill of the chase (and the inevitable car crash) in this superb soft-body damage simulator..."
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
       >
-        <img class="game-img" src="https://i.pinimg.com/736x/dc/f3/a5/dcf3a5f0a7e78293ffe264b5cc9c60f2.jpg" alt="Zombie Survival">
+        <img class="game-img" src="https://i.pinimg.com/736x/dc/f3/a5/dcf3a5f0a7e78293ffe264b5cc9c60f2.jpg" alt="BEAMNG DRIVE">
         <div class="game-title">BEAMNG DRIVE</div>
         <div class="game-desc">Experience the thrill of the chase (and the inevitable car crash) in this superb soft-body damage simulator...</div>
         <button class="download-btn">Download</button>
@@ -489,10 +490,11 @@
         data-title="FORZA HORIZON 5 MOD"
         data-img="https://i.pinimg.com/736x/83/61/7a/83617a2251c061ee3c6a7527c4b2706d.jpg"
         data-preview="https://i.pinimg.com/736x/c6/77/70/c67770e8909e74297a6f0ce9092e64c1.jpg"
-        data-desc=""
-        data-cpa="https://locked4.com/cl/v/99govp"
+        data-desc="Forza Horizon 5 is the latest game in the series, and one of the very best..."
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
       >
-        <img class="game-img" src="https://i.pinimg.com/736x/83/61/7a/83617a2251c061ee3c6a7527c4b2706d.jpg" alt="Fantasy Quest">
+        <img class="game-img" src="https://i.pinimg.com/736x/83/61/7a/83617a2251c061ee3c6a7527c4b2706d.jpg" alt="FORZA HORIZON 5 MOD">
         <div class="game-title">FORZA HORIZON 5 MOD</div>
         <div class="game-desc">Forza Horizon 5 is the latest game in the series, and one of the very best...</div>
         <button class="download-btn">Download</button>
@@ -501,23 +503,24 @@
         data-title="LIMBO MOD"
         data-img="https://i.pinimg.com/736x/ee/ab/57/eeab578378a082bc2df579a2c8f4a954.jpg"
         data-preview="https://i.pinimg.com/736x/45/84/83/45848375f485d8acac0f183d201fd672.jpg"
-        data-desc="Download the latest version of LIMBO Demo for Android and Ios for free"
-        data-cpa="https://locked4.com/cl/v/99govp"
+        data-desc="Download the latest version of LIMBO Demo for Android and iOS for free"
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
       >
-        <img class="game-img" src="https://i.pinimg.com/736x/ee/ab/57/eeab578378a082bc2df579a2c8f4a954.jpg" alt="Soccer Stars">
+        <img class="game-img" src="https://i.pinimg.com/736x/ee/ab/57/eeab578378a082bc2df579a2c8f4a954.jpg" alt="LIMBO MOD">
         <div class="game-title">LIMBO MOD</div>
-        <div class="game-desc">Download the latest version of LIMBO Demo for Android and Ios for free</div>
+        <div class="game-desc">Download the latest version of LIMBO Demo for Android and iOS for free</div>
         <button class="download-btn">Download</button>
       </div>
-      <!-- Candy Crush Saga (fixed) -->
       <div class="game-card"
         data-title="LITTLE NIGHTMARES MOD"
         data-img="https://i.pinimg.com/736x/68/ad/60/68ad6053fe9d23ea1fd2800d917ca7a7.jpg"
         data-preview="https://i.pinimg.com/736x/9e/ca/1e/9eca1ecdd707191aad05823889f60a58.jpg"
         data-desc="Little Nightmares is a puzzle-platform horror adventure game..."
-        data-cpa="https://locked4.com/cl/v/99govp"
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
       >
-        <img class="game-img" src="https://i.pinimg.com/736x/68/ad/60/68ad6053fe9d23ea1fd2800d917ca7a7.jpg" alt="Candy Crush Saga">
+        <img class="game-img" src="https://i.pinimg.com/736x/68/ad/60/68ad6053fe9d23ea1fd2800d917ca7a7.jpg" alt="LITTLE NIGHTMARES MOD">
         <div class="game-title">LITTLE NIGHTMARES MOD</div>
         <div class="game-desc">Little Nightmares is a puzzle-platform horror adventure game...</div>
         <button class="download-btn">Download</button>
@@ -542,7 +545,16 @@
         <div><span>1.2GB</span><small>Size</small></div>
         <div><span>4.8★</span><small>120k Reviews</small></div>
       </div>
-      <button class="modal-download-btn" id="modalDownloadBtn">Download Now</button>
+      <div class="modal-download-btns">
+        <a id="modalAndroidBtn" class="android" href="#" target="_blank">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/android.svg" alt="Android">
+          Download for Android
+        </a>
+        <a id="modaliOSBtn" class="ios" href="#" target="_blank">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/apple.svg" alt="iOS">
+          Download for iOS
+        </a>
+      </div>
       <div class="modal-about">
         <strong>About This Game</strong>
         <span id="modalDesc"></span>
@@ -624,9 +636,9 @@
     const modalGameImg = document.getElementById('modalGameImg');
     const modalGameTitle = document.getElementById('modalGameTitle');
     const modalDesc = document.getElementById('modalDesc');
-    const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+    const modalDownloadBtnAndroid = document.getElementById('modalAndroidBtn');
+    const modalDownloadBtniOS = document.getElementById('modaliOSBtn');
     const closeModalBtn = document.getElementById('closeModal');
-    let cpaUrl = '';
 
     document.querySelectorAll('.game-card').forEach(card => {
       card.querySelector('.download-btn').onclick = function(e) {
@@ -636,7 +648,11 @@
         modalGameImg.src = card.dataset.img;
         modalGameTitle.textContent = card.dataset.title;
         modalDesc.textContent = card.dataset.desc.slice(0, 80) + (card.dataset.desc.length > 80 ? '...' : '');
-        cpaUrl = card.dataset.cpa;
+
+        // CPA links per platform
+        modalDownloadBtnAndroid.href = card.dataset.cpaAndroid;
+        modalDownloadBtniOS.href = card.dataset.cpaIos;
+
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         // Read more in modal
@@ -665,7 +681,9 @@
     const loaderMB = document.getElementById('loaderMB');
     const loaderVerify = document.getElementById('loaderVerify');
     const loaderCPA = document.getElementById('loaderCPA');
-    modalDownloadBtn.onclick = function() {
+
+    // Add download loader for both Android and iOS buttons
+    function triggerLoader(cpaUrl) {
       modal.style.display = 'none';
       document.body.style.overflow = 'hidden';
       loaderOverlay.style.display = 'flex';
@@ -689,7 +707,17 @@
         loaderPercent.textContent = Math.floor(progress) + "%";
         loaderMB.textContent = `${mb} MB / ${total} MB`;
       }, 110);
+    }
+
+    modalDownloadBtnAndroid.onclick = function(e) {
+      e.preventDefault();
+      triggerLoader(modalDownloadBtnAndroid.href);
     };
+    modalDownloadBtniOS.onclick = function(e) {
+      e.preventDefault();
+      triggerLoader(modalDownloadBtniOS.href);
+    };
+
     // Hide loader when clicking outside or on verify (optionally)
     loaderCPA.onclick = function() {
       setTimeout(()=>{
