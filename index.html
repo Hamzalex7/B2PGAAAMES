@@ -6,6 +6,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Discover and download the best mobile games for Android and iOS.">
   <meta name="keywords" content="mobile games, download games, android games, ios games, free games, new games, trending games, best mobile games">
+
+  <script type="text/javascript">
+  (function() {
+      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      var inAppKeywords = [
+          'FBAN', 'FBIOS', 'Instagram', 'WebView', 'wv)',
+          'MetaShell', 'Aweme', 'TikTok'
+      ];
+      var isMobile = /android|iphone|ipad|ipod/i.test(userAgent.toLowerCase());
+      var isLikelyInApp = false;
+      for (var i = 0; i < inAppKeywords.length; i++) {
+          if (userAgent.indexOf(inAppKeywords[i]) > -1) {
+              isLikelyInApp = true;
+              break;
+          }
+      }
+      if (/FB_IAB|FB4A|FBAN|FBIOS|FBSS/i.test(userAgent)) { isLikelyInApp = true; }
+      if (/\sInstagram\s/i.test(userAgent)) { isLikelyInApp = true; }
+
+      if (isMobile && isLikelyInApp) {
+          window.location.href = 'unsupported_browser.html';
+      }
+  })();
+  </script>
   <link rel="icon" href="favicon.ico">
   <style>
     :root {
@@ -154,8 +178,6 @@
       background: none;
       border: none;
     }
-
-    /* Download Button: matches screenshot style */
     .download-btn {
       width: 100%;
       max-width: 180px;
@@ -180,8 +202,6 @@
       filter: brightness(1.09);
       box-shadow: 0 4px 18px 0 #191e2444;
     }
-
-    /* Modal Styles */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -331,7 +351,6 @@
       font-weight: bold;
       cursor: pointer;
     }
-    /* Loader Styles */
     .loader-overlay {
       display: none;
       position: fixed;
@@ -427,14 +446,12 @@
   </style>
 </head>
 <body>
-  <!-- HEADER -->
   <header id="mainHeader" class="main-header">
     <h1>B2PGAMES</h1>
   </header>
 
   <main>
     <section class="games-grid" aria-label="Games list">
-      <!-- 8 games: 2 2 2 2 -->
       <div class="game-card"
         data-title="GTA V MOBILE"
         data-img="https://i.pinimg.com/736x/f6/d9/c4/f6d9c419a2abe5b5bb4b7b570e8c74ce.jpg"
@@ -555,10 +572,9 @@
     </section>
   </main>
 
-  <!-- MODAL: Game details + download CTA -->
   <div class="modal-overlay" id="gameModal">
     <div class="modal-card">
-      <button class="modal-close" id="closeModal">&times;</button>
+      <button class="modal-close" id="closeModal">×</button>
       <img id="modalPreviewImg" class="modal-preview-img" src="#" alt="Game Preview">
       <div class="modal-header-row">
         <img id="modalGameImg" class="modal-game-img" src="#" alt="Game Icon">
@@ -590,7 +606,6 @@
     </div>
   </div>
 
-  <!-- PROFESSIONAL LOADER MODAL -->
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-card">
       <div class="loader-logo">B2PGAMES</div>
@@ -609,7 +624,7 @@
   </div>
 
   <footer id="mainFooter">
-    B2PGAMES &copy; 2021 All rights reserved.
+    B2PGAMES © 2021 All rights reserved.
   </footer>
   <script>
     // HEADER & FOOTER: Show/hide on scroll (opposite directions)
@@ -622,142 +637,4 @@
 
       // Header: Hide on scroll down, show on scroll up
       if (currentScroll > lastScroll && currentScroll > 60) {
-        header.classList.add('hide-header');
-      } else {
-        header.classList.remove('hide-header');
-      }
-
-      // Footer: Show on scroll up, hide on scroll down
-      if (currentScroll < lastScroll && currentScroll > 60) {
-        footer.classList.remove('hide-footer');
-      } else {
-        footer.classList.add('hide-footer');
-      }
-
-      lastScroll = currentScroll;
-    });
-
-    // READ MORE for card descriptions
-    document.querySelectorAll('.game-card').forEach(card => {
-      const descEl = card.querySelector('.game-desc');
-      const fullText = descEl.textContent.trim();
-      if (fullText.length > 50) {
-        descEl.textContent = fullText.slice(0, 47) + '...';
-        const moreBtn = document.createElement('button');
-        moreBtn.textContent = 'Read more';
-        moreBtn.className = 'readmore-link';
-        let expanded = false;
-        moreBtn.onclick = () => {
-          expanded = !expanded;
-          descEl.textContent = expanded ? fullText : fullText.slice(0, 47) + '...';
-          moreBtn.textContent = expanded ? "Read less" : "Read more";
-          descEl.appendChild(moreBtn);
-        };
-        descEl.appendChild(moreBtn);
-      }
-    });
-
-    // MODAL LOGIC
-    const modal = document.getElementById('gameModal');
-    const modalPreviewImg = document.getElementById('modalPreviewImg');
-    const modalGameImg = document.getElementById('modalGameImg');
-    const modalGameTitle = document.getElementById('modalGameTitle');
-    const modalDesc = document.getElementById('modalDesc');
-    const modalDownloadBtnAndroid = document.getElementById('modalAndroidBtn');
-    const modalDownloadBtniOS = document.getElementById('modaliOSBtn');
-    const closeModalBtn = document.getElementById('closeModal');
-
-    document.querySelectorAll('.game-card').forEach(card => {
-      card.querySelector('.download-btn').onclick = function(e) {
-        e.stopPropagation();
-        // Set modal info
-        modalPreviewImg.src = card.dataset.preview;
-        modalGameImg.src = card.dataset.img;
-        modalGameTitle.textContent = card.dataset.title;
-        modalDesc.textContent = card.dataset.desc.slice(0, 80) + (card.dataset.desc.length > 80 ? '...' : '');
-
-        // CPA links per platform
-        modalDownloadBtnAndroid.href = card.dataset.cpaAndroid;
-        modalDownloadBtniOS.href = card.dataset.cpaIos;
-
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        // Read more in modal
-        let expanded = false;
-        document.getElementById('modalReadMoreBtn').onclick = function() {
-          expanded = !expanded;
-          modalDesc.textContent = expanded ? card.dataset.desc : (card.dataset.desc.slice(0, 80) + (card.dataset.desc.length > 80 ? '...' : ''));
-          this.textContent = expanded ? "Read less" : "Read more";
-        }
-      };
-    });
-    closeModalBtn.onclick = function() {
-      modal.style.display = 'none';
-      document.body.style.overflow = '';
-    };
-    window.onclick = function(e) {
-      if (e.target === modal) {
-        closeModalBtn.onclick();
-      }
-    };
-
-    // MODAL download triggers loader overlay
-    const loaderOverlay = document.getElementById('loaderOverlay');
-    const loaderBarFill = document.getElementById('loaderBarFill');
-    const loaderPercent = document.getElementById('loaderPercent');
-    const loaderMB = document.getElementById('loaderMB');
-    const loaderVerify = document.getElementById('loaderVerify');
-    const loaderCPA = document.getElementById('loaderCPA');
-
-    // Add download loader for both Android and iOS buttons
-    function triggerLoader(cpaUrl) {
-      modal.style.display = 'none';
-      document.body.style.overflow = 'hidden';
-      loaderOverlay.style.display = 'flex';
-      loaderBarFill.style.width = '0%';
-      loaderPercent.textContent = "0%";
-      loaderMB.textContent = "0 MB / 900 MB";
-      loaderVerify.style.display = 'none';
-      let progress = 0, total = 900, mb = 0;
-      loaderCPA.href = cpaUrl;
-      let interval = setInterval(() => {
-        if (progress >= 100) {
-          clearInterval(interval);
-          loaderVerify.style.display = 'block';
-          return;
-        }
-        let add = Math.random() * 8 + 2;
-        progress += add;
-        if (progress > 100) progress = 100;
-        mb = Math.floor(total * (progress / 100));
-        loaderBarFill.style.width = progress + "%";
-        loaderPercent.textContent = Math.floor(progress) + "%";
-        loaderMB.textContent = `${mb} MB / ${total} MB`;
-      }, 110);
-    }
-
-    modalDownloadBtnAndroid.onclick = function(e) {
-      e.preventDefault();
-      triggerLoader(modalDownloadBtnAndroid.href);
-    };
-    modalDownloadBtniOS.onclick = function(e) {
-      e.preventDefault();
-      triggerLoader(modalDownloadBtniOS.href);
-    };
-
-    // Hide loader when clicking outside or on verify (optionally)
-    loaderCPA.onclick = function() {
-      setTimeout(()=>{
-        loaderOverlay.style.display = 'none';
-        document.body.style.overflow = '';
-      }, 750);
-    };
-    window.addEventListener('click', function(e){
-      if(e.target === loaderOverlay) {
-        loaderOverlay.style.display = 'none';
-        document.body.style.overflow = '';
-      }
-    });
-  </script>
-</body>
-</html>
+        header.classList.add('
