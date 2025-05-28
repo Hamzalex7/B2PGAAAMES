@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsupported Browser</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        header .arrow-back {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #555;
+            cursor: pointer;
+        }
+        header .title {
+            font-size: 1.2em;
+            font-weight: 500;
+            color: #333;
+        }
+        header .menu-dots {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #555;
+            letter-spacing: -2px;
+        }
+        main {
+            padding: 25px 20px;
+            text-align: center;
+            flex-grow: 1;
+            background-color: #fff;
+        }
+        main h1 {
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #222;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .instruction-text {
+            font-size: 1em;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .instruction-text .menu-dots-inline {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #E91E63;
+        }
+        .instruction-box-container {
+            margin-top: 20px;
+        }
+        .instruction-box-label {
+            font-size: 0.95em;
+            color: #777;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+        .instruction-box {
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .instruction-box.header-example {
+            justify-content: space-between;
+        }
+        .header-example .arrow-back-small,
+        .header-example .title-small,
+        .header-example .menu-dots-small-highlight {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .header-example .title-small {
+            font-weight: 500;
+        }
+        .header-example .menu-dots-small-highlight {
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #E91E63;
+        }
+        .instruction-box.open-browser-example {
+            font-size: 1em;
+            color: #444;
+            font-weight: 500;
+        }
+        .instruction-box.open-browser-example .browser-icon {
+            font-size: 1.4em;
+            margin-right: 12px;
+            color: #03A9F4;
+        }
+        @media (max-width: 360px) {
+            header .title { font-size: 1em; }
+            main h1 { font-size: 1.4em; }
+            .instruction-text { font-size: 0.95em; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <span class="arrow-back">←</span>
+        <span class="title">Web browser</span>
+        <span class="menu-dots">⋮</span>
+    </header>
+    <main>
+        <h1>This browser isn't supported</h1>
+        <p class="instruction-text">
+            Please tap the <span class="menu-dots-inline">•••</span> menu above, then choose "Open in browser" to continue.
+        </p>
+        <div class="instruction-box-container">
+            <p class="instruction-box-label">Tap On •••</p>
+            <div class="instruction-box header-example">
+                <span class="arrow-back-small">←</span>
+                <span class="title-small">Web browser</span>
+                <span class="menu-dots-small-highlight">•••</span>
+            </div>
+            <p class="instruction-box-label">Then Chose " Open In Browser "</p>
+            <div class="instruction-box open-browser-example">
+                <span class="browser-icon">🧭</span>
+                Open in browser
+            </div>
+        </div>
+    </main>
+</body>
+</html>
