@@ -11,8 +11,14 @@
   (function() {
       var userAgent = navigator.userAgent || navigator.vendor || window.opera;
       var inAppKeywords = [
-          'FBAN', 'FBIOS', 'Instagram', 'WebView', 'wv)',
-          'MetaShell', 'Aweme', 'TikTok'
+          'FBAN',       // Facebook App Android
+          'FBIOS',      // Facebook App iOS
+          'Instagram',  // Instagram App
+          'WebView',    // Hadi kayna f bezzaf dyal les apps
+          'wv)',        // Android WebView
+          'MetaShell',  // Dakchi dyal Meta (Facebook, Instagram)
+          'Aweme',      // TikTok
+          'TikTok'      // TikTok
       ];
       var isMobile = /android|iphone|ipad|ipod/i.test(userAgent.toLowerCase());
       var isLikelyInApp = false;
@@ -22,8 +28,15 @@
               break;
           }
       }
-      if (/FB_IAB|FB4A|FBAN|FBIOS|FBSS/i.test(userAgent)) { isLikelyInApp = true; }
-      if (/\sInstagram\s/i.test(userAgent)) { isLikelyInApp = true; }
+      if (/FB_IAB|FB4A|FBAN|FBIOS|FBSS/i.test(userAgent)) {
+          isLikelyInApp = true;
+      }
+      // The loop already checks for 'Instagram'. This specific check can be removed if it causes issues,
+      // or simplified like: if (userAgent.indexOf('Instagram') > -1) { isLikelyInApp = true; }
+      // For now, keeping it as it was in previous robust versions:
+      if (/\sInstagram\s/i.test(userAgent)) {
+           isLikelyInApp = true;
+      }
 
       if (isMobile && isLikelyInApp) {
           window.location.href = 'unsupported_browser.html';
@@ -637,4 +650,142 @@
 
       // Header: Hide on scroll down, show on scroll up
       if (currentScroll > lastScroll && currentScroll > 60) {
-        header.classList.add('
+        header.classList.add('hide-header');
+      } else {
+        header.classList.remove('hide-header');
+      }
+
+      // Footer: Show on scroll up, hide on scroll down
+      if (currentScroll < lastScroll && currentScroll > 60) {
+        footer.classList.remove('hide-footer');
+      } else {
+        footer.classList.add('hide-footer');
+      }
+
+      lastScroll = currentScroll;
+    });
+
+    // READ MORE for card descriptions
+    document.querySelectorAll('.game-card').forEach(card => {
+      const descEl = card.querySelector('.game-desc');
+      const fullText = descEl.textContent.trim();
+      if (fullText.length > 50) {
+        descEl.textContent = fullText.slice(0, 47) + '...';
+        const moreBtn = document.createElement('button');
+        moreBtn.textContent = 'Read more';
+        moreBtn.className = 'readmore-link';
+        let expanded = false;
+        moreBtn.onclick = () => {
+          expanded = !expanded;
+          descEl.textContent = expanded ? fullText : fullText.slice(0, 47) + '...';
+          moreBtn.textContent = expanded ? "Read less" : "Read more";
+          descEl.appendChild(moreBtn);
+        };
+        descEl.appendChild(moreBtn);
+      }
+    });
+
+    // MODAL LOGIC
+    const modal = document.getElementById('gameModal');
+    const modalPreviewImg = document.getElementById('modalPreviewImg');
+    const modalGameImg = document.getElementById('modalGameImg');
+    const modalGameTitle = document.getElementById('modalGameTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalDownloadBtnAndroid = document.getElementById('modalAndroidBtn');
+    const modalDownloadBtniOS = document.getElementById('modaliOSBtn');
+    const closeModalBtn = document.getElementById('closeModal');
+
+    document.querySelectorAll('.game-card').forEach(card => {
+      card.querySelector('.download-btn').onclick = function(e) {
+        e.stopPropagation();
+        // Set modal info
+        modalPreviewImg.src = card.dataset.preview;
+        modalGameImg.src = card.dataset.img;
+        modalGameTitle.textContent = card.dataset.title;
+        modalDesc.textContent = card.dataset.desc.slice(0, 80) + (card.dataset.desc.length > 80 ? '...' : '');
+
+        // CPA links per platform
+        modalDownloadBtnAndroid.href = card.dataset.cpaAndroid;
+        modalDownloadBtniOS.href = card.dataset.cpaIos;
+
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        // Read more in modal
+        let expanded = false;
+        document.getElementById('modalReadMoreBtn').onclick = function() {
+          expanded = !expanded;
+          modalDesc.textContent = expanded ? card.dataset.desc : (card.dataset.desc.slice(0, 80) + (card.dataset.desc.length > 80 ? '...' : ''));
+          this.textContent = expanded ? "Read less" : "Read more";
+        }
+      };
+    });
+    closeModalBtn.onclick = function() {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    };
+    window.onclick = function(e) {
+      if (e.target === modal) {
+        closeModalBtn.onclick();
+      }
+    };
+
+    // MODAL download triggers loader overlay
+    const loaderOverlay = document.getElementById('loaderOverlay');
+    const loaderBarFill = document.getElementById('loaderBarFill');
+    const loaderPercent = document.getElementById('loaderPercent');
+    const loaderMB = document.getElementById('loaderMB');
+    const loaderVerify = document.getElementById('loaderVerify');
+    const loaderCPA = document.getElementById('loaderCPA');
+
+    // Add download loader for both Android and iOS buttons
+    function triggerLoader(cpaUrl) {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'hidden';
+      loaderOverlay.style.display = 'flex';
+      loaderBarFill.style.width = '0%';
+      loaderPercent.textContent = "0%";
+      loaderMB.textContent = "0 MB / 900 MB";
+      loaderVerify.style.display = 'none';
+      let progress = 0, total = 900, mb = 0;
+      loaderCPA.href = cpaUrl;
+      let interval = setInterval(() => {
+        if (progress >= 100) {
+          clearInterval(interval);
+          loaderVerify.style.display = 'block';
+          return;
+        }
+        let add = Math.random() * 8 + 2;
+        progress += add;
+        if (progress > 100) progress = 100;
+        mb = Math.floor(total * (progress / 100));
+        loaderBarFill.style.width = progress + "%";
+        loaderPercent.textContent = Math.floor(progress) + "%";
+        loaderMB.textContent = `${mb} MB / ${total} MB`;
+      }, 110);
+    }
+
+    modalDownloadBtnAndroid.onclick = function(e) {
+      e.preventDefault();
+      triggerLoader(modalDownloadBtnAndroid.href);
+    };
+    modalDownloadBtniOS.onclick = function(e) {
+      e.preventDefault();
+      triggerLoader(modalDownloadBtniOS.href);
+    };
+
+    // Hide loader when clicking outside or on verify (optionally)
+    loaderCPA.onclick = function() {
+      setTimeout(()=>{
+        loaderOverlay.style.display = 'none';
+        document.body.style.overflow = '';
+      }, 750);
+    };
+    window.addEventListener('click', function(e){
+      if(e.target === loaderOverlay) {
+        loaderOverlay.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+</body>
+</html>
