@@ -23,6 +23,9 @@
             justify-content: space-between;
             border-bottom: 1px solid #ddd;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky; /* For the arrow to reference something static if needed */
+            top: 0;
+            z-index: 1000; /* Ensure header is on top */
         }
         header .arrow-back {
             font-size: 1.8em;
@@ -63,7 +66,15 @@
         .instruction-text .menu-dots-inline {
             font-weight: bold;
             font-size: 1.2em;
-            color: #E91E63;
+            color: #E91E63; /* Pink color for dots */
+        }
+        .main-instruction-arrow { /* Style for the arrow in the main instruction */
+            color: red;
+            font-size: 1.5em; /* Make it bigger */
+            font-weight: bold;
+            margin-left: 5px;
+            display: inline-block;
+            transform: translateY(2px); /* Adjust vertical alignment */
         }
         .instruction-box-container {
             margin-top: 20px;
@@ -83,23 +94,34 @@
             display: flex;
             align-items: center;
             box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            position: relative; /* For positioning elements inside if needed */
         }
         .instruction-box.header-example {
             justify-content: space-between;
         }
         .header-example .arrow-back-small,
-        .header-example .title-small,
+        .header-example .title-small-container, /* Container for title and arrow */
         .header-example .menu-dots-small-highlight {
             font-size: 0.9em;
             color: #666;
         }
-        .header-example .title-small {
+        .header-example .title-small-container {
             font-weight: 500;
+            display: flex; /* To align title and arrow */
+            align-items: center;
+        }
+        .example-box-curved-arrow { /* Style for the curved arrow in the example box */
+            color: red;
+            font-size: 1.6em; /* Adjust size */
+            font-weight: bold;
+            margin: 0 5px; /* Space around arrow */
+            display: inline-block;
+            line-height: 1;
         }
         .header-example .menu-dots-small-highlight {
             font-weight: bold;
             font-size: 1.3em;
-            color: #E91E63;
+            color: #E91E63; /* Pink color for dots */
         }
         .instruction-box.open-browser-example {
             font-size: 1em;
@@ -115,30 +137,29 @@
             header .title { font-size: 1em; }
             main h1 { font-size: 1.4em; }
             .instruction-text { font-size: 0.95em; }
+            .main-instruction-arrow { font-size: 1.3em; }
+            .example-box-curved-arrow { font-size: 1.4em; }
         }
     </style>
 </head>
-<body>
-    <header>
-        <span class="arrow-back">←</span>
-        <span class="title">Web browser</span>
-        <span class="menu-dots">⋮</span>
     </header>
     <main>
         <h1>This browser isn't supported</h1>
         <p class="instruction-text">
-            Please tap the <span class="menu-dots-inline">•••</span> menu above, then choose "Open in browser" to continue.
+            Please tap the <span class="menu-dots-inline">•••</span><span class="main-instruction-arrow">↗</span> menu above, then choose "Open in browser" to continue.
         </p>
         <div class="instruction-box-container">
             <p class="instruction-box-label">Tap On •••</p>
             <div class="instruction-box header-example">
                 <span class="arrow-back-small">←</span>
-                <span class="title-small">Web browser</span>
+                <span class="title-small-container">
+                    Web browser <span class="example-box-curved-arrow">↪</span>
+                </span>
                 <span class="menu-dots-small-highlight">•••</span>
             </div>
             <p class="instruction-box-label">Then Chose " Open In Browser "</p>
             <div class="instruction-box open-browser-example">
-                <span class="browser-icon">🧭</span>
+                <span class="browser-icon"></span>
                 Open in browser
             </div>
         </div>
