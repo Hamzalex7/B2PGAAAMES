@@ -3,295 +3,567 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Phone Store - AliExpress Style</title>
+    <title>The Phone Store - Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            overscroll-behavior-y: contain; /* Prevents pull-to-refresh on body for main container */
+        }
+        .page-container {
+            overscroll-behavior-y: auto; /* Allow normal scroll within pages */
+        }
+
+        .page {
+            display: none; /* All pages hidden by default */
+            min-height: calc(100vh - 4rem - 4rem); /* Full height minus header and footer */
+        }
+        .page.active {
+            display: block; /* Show active page */
         }
         /* Custom scrollbar */
         ::-webkit-scrollbar {
-            height: 6px;
+            height: 8px; /* Increased size for better touch on product carousels */
             width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #f9f9f9; /* Lighter track */
+            border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 3px;
+            background: #ddd; /* Lighter thumb */
+            border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background: #bbb; /* Darker on hover */
+        }
+        .bottom-nav {
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
         }
         .bottom-nav-item {
-            @apply flex flex-col items-center justify-center text-gray-500 hover:text-red-600 transition-colors duration-200; /* AliExpress: red hover */
+            @apply flex flex-col items-center justify-center text-gray-500 hover:text-red-500 transition-colors duration-200 flex-1 pt-1 pb-1;
+        }
+        .bottom-nav-item.active-nav {
+            @apply text-red-500; /* AliExpress: red for active nav */
         }
         .bottom-nav-item i {
-            @apply text-xl mb-1;
+            @apply text-xl mb-0.5;
         }
         .bottom-nav-item span {
             @apply text-xs;
         }
         .product-card {
-            min-width: 160px;
-            width: 45%;
-            max-width: 200px;
+            min-width: 150px; /* Adjusted for more items */
+            width: 40%;    /* Aim for 2.5 cards visible */
+            max-width: 170px;
+            @apply bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex-shrink-0 flex flex-col;
         }
-        @media (min-width: 400px) {
-            .product-card {
-                width: 40%;
-            }
+         .product-card img {
+            @apply w-full h-32 object-cover;
         }
+        .product-card-content {
+            @apply p-2 sm:p-3 flex flex-col flex-grow;
+        }
+        .product-card .product-name {
+             @apply text-xs sm:text-sm font-semibold text-gray-800 mb-1 leading-tight;
+             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+
+
         /* Modal styles */
-        .modal {
-            @apply fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50 transition-opacity duration-300;
+        .modal-overlay { /* Changed from .modal to .modal-overlay */
+            @apply fixed inset-0 bg-gray-800 bg-opacity-75 overflow-y-auto h-full w-full flex items-center justify-center z-50 transition-opacity duration-300 opacity-0 pointer-events-none;
+        }
+        .modal-overlay.active {
+             @apply opacity-100 pointer-events-auto;
         }
         .modal-content {
-            @apply bg-white p-6 rounded-lg shadow-xl w-11/12 max-w-md mx-auto transform transition-all duration-300 scale-95 opacity-0;
+            @apply bg-white p-5 sm:p-6 rounded-lg shadow-xl w-11/12 max-w-md mx-auto transform transition-all duration-300 scale-95 opacity-0;
         }
-        .modal.active .modal-content {
+        .modal-overlay.active .modal-content {
             @apply scale-100 opacity-100;
         }
         .loading-spinner {
-            border-top-color: #ef4444; /* AliExpress: red */
+            border-top-color: #ff4747; /* AliExpress: red */
             @apply inline-block w-6 h-6 border-4 border-gray-200 border-solid rounded-full animate-spin;
         }
 
-        /* AliExpress Color Palette (Approximate) */
-        .aliexpress-red {
-            background-color: #ff4747; /* A common AliExpress red/orange */
+        /* AliExpress Color Palette */
+        .aliexpress-red-bg {
+            background-color: #ff4747;
             color: white;
         }
         .aliexpress-red-text {
             color: #ff4747;
         }
         .aliexpress-red-hover:hover {
-            background-color: #e63939; /* Darker shade for hover */
+            background-color: #e63939;
         }
         .aliexpress-secondary-button {
-            @apply bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm shadow hover:bg-gray-300 transition-colors flex-shrink-0;
+            @apply bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full text-xs sm:text-sm shadow-sm hover:bg-gray-200 transition-colors flex-shrink-0;
         }
         .aliexpress-active-category {
-             @apply aliexpress-red text-white px-4 py-2 rounded-full text-sm shadow flex-shrink-0;
+             @apply aliexpress-red-bg text-white px-3 py-1.5 rounded-full text-xs sm:text-sm shadow-sm flex-shrink-0;
+        }
+        .product-detail-image {
+            max-height: 300px;
+            @apply w-full object-contain rounded-md bg-gray-100;
+        }
+        .detail-add-to-cart-btn {
+            @apply w-full aliexpress-red-bg aliexpress-red-hover text-white font-semibold py-3 px-4 rounded-md transition-colors duration-200 flex items-center justify-center;
+        }
+         .detail-buy-now-btn {
+            @apply w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-4 rounded-md transition-colors duration-200 flex items-center justify-center;
+        }
+        /* Search Overlay */
+        #search-overlay {
+            @apply fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-start justify-center pt-16 sm:pt-24;
+        }
+        #search-overlay-content {
+            @apply bg-white p-4 sm:p-6 rounded-lg shadow-xl w-11/12 max-w-lg transform transition-all duration-300 scale-95 opacity-0;
+        }
+         #search-overlay.active #search-overlay-content {
+            @apply scale-100 opacity-100;
         }
 
     </style>
 </head>
 <body class="bg-gray-100" dir="ltr">
 
-    <div class="container mx-auto max-w-md bg-white shadow-lg min-h-screen">
+    <div class="container mx-auto max-w-md bg-white shadow-lg min-h-screen flex flex-col">
 
         <!-- Top Navigation Bar -->
-        <header class="sticky top-0 z-40 bg-white shadow-md px-4 py-3">
+        <header id="main-header" class="sticky top-0 z-40 bg-white shadow-md px-4 py-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-2">
-                    <img src="https://placehold.co/30x30/ff4747/ffffff?text=S" alt="Store Logo" class="h-8 w-8 rounded-full"> <!-- AliExpress red logo bg -->
+                    <img src="https://placehold.co/30x30/ff4747/ffffff?text=S" alt="Store Logo" class="h-8 w-8 rounded-full">
                     <h1 class="text-xl font-semibold text-gray-800">The Phone Store</h1>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button aria-label="Search" class="text-gray-600 hover:text-red-600">
+                    <button id="search-icon-btn" aria-label="Search" class="text-gray-600 hover:text-red-500">
                         <i class="fas fa-search text-xl"></i>
                     </button>
-                    <button aria-label="Notifications" class="text-gray-600 hover:text-red-600 relative">
+                    <button aria-label="Notifications" class="text-gray-600 hover:text-red-500 relative">
                         <i class="fas fa-bell text-xl"></i>
-                        <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"></span>
+                        <span class="absolute -top-1 -right-1 block h-2.5 w-2.5 rounded-full bg-red-500 ring-1 ring-white text-xs"></span>
                     </button>
                 </div>
             </div>
         </header>
+        
+        <!-- Product Detail Header (shown on product detail page) -->
+        <header id="product-detail-header" class="sticky top-0 z-40 bg-white shadow-md px-4 py-3 hidden">
+            <div class="flex items-center justify-between">
+                <button id="back-to-home-btn" class="text-gray-600 hover:text-red-500">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </button>
+                <h1 id="product-detail-title" class="text-lg font-semibold text-gray-800 truncate mx-2">Product Details</h1>
+                <div class="w-8"></div> <!-- Spacer to balance the back button -->
+            </div>
+        </header>
 
-        <!-- Main Content Area -->
-        <main class="p-4 pb-20">
 
-            <!-- Categories Section -->
-            <section class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-700 mb-2">Categories</h2>
-                <div class="flex space-x-3 overflow-x-auto pb-2">
-                    <button class="aliexpress-active-category">Electronics</button> <!-- Active category with AliExpress red -->
-                    <button class="aliexpress-secondary-button">Fashion</button>
-                    <button class="aliexpress-secondary-button">Home</button>
-                    <button class="aliexpress-secondary-button">Beauty</button>
-                    <button class="aliexpress-secondary-button">Sports</button>
-                </div>
-            </section>
-
-            <!-- Products Section -->
-            <section class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-700 mb-3">Products</h2>
-                <div id="products-section" class="flex space-x-4 overflow-x-auto pb-3">
-                    <!-- Product Card 1 -->
-                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex-shrink-0">
-                        <a href="#" class="block h-full flex flex-col">
-                            <img src="https://placehold.co/300x200/e2e8f0/94a3b8?text=Product+1" alt="Smartphone Pro X" class="w-full h-32 object-cover">
-                            <div class="p-3 flex flex-col flex-grow">
-                                <h3 class="product-name text-sm font-semibold text-gray-800 mb-1 truncate">Smartphone Pro X</h3>
-                                <div class="flex items-center justify-between text-xs mb-2">
-                                    <p class="font-bold aliexpress-red-text">$599</p> <!-- Price in red -->
-                                    <div class="flex items-center text-gray-500">
-                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
-                                        <span>4.5</span>
-                                    </div>
-                                </div>
-                                <p class="text-xs text-gray-500 mb-1">454 sold</p>
-                                <button class="generate-details-btn mt-1 text-xs aliexpress-red-text hover:text-red-700 self-start">✨ See more details</button> <!-- Button text in red -->
-                                <div class="text-right mt-auto">
-                                     <i class="fas fa-arrow-right aliexpress-red-text"></i> <!-- Arrow in red -->
-                                </div>
-                            </div>
-                        </a>
+        <!-- Page Container -->
+        <div class="page-container flex-grow overflow-y-auto">
+            <!-- Home Page -->
+            <main id="home-page" class="page active p-4">
+                <!-- Categories Section -->
+                <section class="mb-5">
+                    <h2 class="text-base sm:text-lg font-semibold text-gray-700 mb-2">Categories</h2>
+                    <div class="flex space-x-2 sm:space-x-3 overflow-x-auto pb-2">
+                        <button class="aliexpress-active-category">Electronics</button>
+                        <button class="aliexpress-secondary-button">Fashion</button>
+                        <button class="aliexpress-secondary-button">Home & Garden</button>
+                        <button class="aliexpress-secondary-button">Beauty</button>
+                        <button class="aliexpress-secondary-button">Sports</button>
+                        <button class="aliexpress-secondary-button">Toys</button>
                     </div>
-                    <!-- Product Card 2 -->
-                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex-shrink-0">
-                         <a href="#" class="block h-full flex flex-col">
-                            <img src="https://placehold.co/300x200/dbeafe/60a5fa?text=Product+2" alt="Wireless Headphones" class="w-full h-32 object-cover">
-                            <div class="p-3 flex flex-col flex-grow">
-                                <h3 class="product-name text-sm font-semibold text-gray-800 mb-1 truncate">Wireless Headphones</h3>
-                                <div class="flex items-center justify-between text-xs mb-2">
-                                    <p class="font-bold aliexpress-red-text">$129</p> <!-- Price in red -->
-                                    <div class="flex items-center text-gray-500">
-                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
-                                        <span>4.8</span>
-                                    </div>
-                                </div>
-                                <p class="text-xs text-gray-500 mb-1">1020 sold</p>
-                                <button class="generate-details-btn mt-1 text-xs aliexpress-red-text hover:text-red-700 self-start">✨ See more details</button> <!-- Button text in red -->
-                                <div class="text-right mt-auto">
-                                     <i class="fas fa-arrow-right aliexpress-red-text"></i> <!-- Arrow in red -->
-                                </div>
-                            </div>
-                        </a>
+                </section>
+
+                <!-- Product Sections Data (will be populated by JS) -->
+            </main>
+
+            <!-- Product Detail Page -->
+            <div id="product-detail-page" class="page p-4">
+                <img id="detail-product-image" src="https://placehold.co/600x400/e0e0e0/757575?text=Product" alt="Product Image" class="product-detail-image mb-4">
+                <h2 id="detail-product-name" class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Product Name</h2>
+                <div class="flex items-center justify-between mb-3">
+                    <p id="detail-product-price" class="text-2xl font-bold aliexpress-red-text">$0.00</p>
+                    <div class="flex items-center text-sm text-gray-500">
+                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                        <span id="detail-product-rating">0.0</span>
+                        <span class="mx-1">|</span>
+                        <span id="detail-product-sold">0</span> sold
                     </div>
                 </div>
-            </section>
-
-            <!-- Recommended for You Section -->
-            <section class="mb-6">
-                <div class="flex justify-between items-center mb-3">
-                    <h2 class="text-lg font-semibold text-gray-700">Recommended for You</h2>
-                    <button id="get-more-recommendations-btn" class="text-sm bg-red-100 aliexpress-red-text px-3 py-1 rounded-full hover:bg-red-200 transition-colors">✨ Get more recommendations</button> <!-- Button with red theme -->
-                </div>
-                <div id="recommended-products-section" class="flex space-x-4 overflow-x-auto pb-3">
-                    <!-- Recommended Product 1 -->
-                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex-shrink-0">
-                        <a href="#" class="block h-full flex flex-col">
-                            <img src="https://placehold.co/300x200/f0fdfa/2dd4bf?text=Rec+1" alt="Noise Cancelling Earbuds" class="w-full h-32 object-cover">
-                            <div class="p-3 flex flex-col flex-grow">
-                                <h3 class="product-name text-sm font-semibold text-gray-800 mb-1 truncate">Noise Cancelling Earbuds</h3>
-                                <div class="flex items-center justify-between text-xs mb-2">
-                                    <p class="font-bold aliexpress-red-text">$159</p> <!-- Price in red -->
-                                    <div class="flex items-center text-gray-500">
-                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
-                                        <span>4.8</span>
-                                    </div>
-                                </div>
-                                <p class="text-xs text-gray-500 mb-1">800 sold</p>
-                                <button class="generate-details-btn mt-1 text-xs aliexpress-red-text hover:text-red-700 self-start">✨ See more details</button> <!-- Button text in red -->
-                                <div class="text-right mt-auto">
-                                     <i class="fas fa-arrow-right aliexpress-red-text"></i> <!-- Arrow in red -->
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                     <!-- Recommended Product 2 -->
-                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex-shrink-0">
-                         <a href="#" class="block h-full flex flex-col">
-                            <img src="https://placehold.co/300x200/fefce8/eab308?text=Rec+2" alt="Portable SSD 1TB" class="w-full h-32 object-cover">
-                            <div class="p-3 flex flex-col flex-grow">
-                                <h3 class="product-name text-sm font-semibold text-gray-800 mb-1 truncate">Portable SSD 1TB</h3>
-                                <div class="flex items-center justify-between text-xs mb-2">
-                                    <p class="font-bold aliexpress-red-text">$99</p> <!-- Price in red -->
-                                    <div class="flex items-center text-gray-500">
-                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
-                                        <span>4.7</span>
-                                    </div>
-                                </div>
-                                <p class="text-xs text-gray-500 mb-1">550 sold</p>
-                                <button class="generate-details-btn mt-1 text-xs aliexpress-red-text hover:text-red-700 self-start">✨ See more details</button> <!-- Button text in red -->
-                                <div class="text-right mt-auto">
-                                     <i class="fas fa-arrow-right aliexpress-red-text"></i> <!-- Arrow in red -->
-                                </div>
-                            </div>
-                        </a>
+                
+                <div class="mb-4">
+                    <h3 class="text-md font-semibold text-gray-700 mb-1">Description</h3>
+                    <div id="detail-product-description" class="text-sm text-gray-600 leading-relaxed min-h-[60px]">
+                        <div class="flex justify-center items-center h-full"><div class="loading-spinner"></div></div>
                     </div>
                 </div>
-            </section>
 
-        </main>
+                <div class="space-y-3 mt-6">
+                    <button class="detail-add-to-cart-btn"><i class="fas fa-cart-plus mr-2"></i>Add to Cart</button>
+                    <button class="detail-buy-now-btn"><i class="fas fa-bolt mr-2"></i>Buy Now</button>
+                </div>
+
+                <!-- Placeholder for more details like specifications, reviews -->
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <h3 class="text-md font-semibold text-gray-700 mb-2">Specifications</h3>
+                    <p class="text-sm text-gray-500">Details about materials, dimensions, etc. (Placeholder)</p>
+                </div>
+                 <div class="mt-4 pt-4 border-t border-gray-200">
+                    <h3 class="text-md font-semibold text-gray-700 mb-2">Customer Reviews (120)</h3>
+                    <p class="text-sm text-gray-500">Review snippets and ratings here. (Placeholder)</p>
+                </div>
+            </div>
+
+            <!-- Cart Page -->
+            <div id="cart-page" class="page p-4 flex flex-col items-center justify-center">
+                <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
+                <h2 class="text-2xl font-semibold text-gray-700 mb-2">Your Cart is Empty</h2>
+                <p class="text-gray-500 text-center mb-6">Looks like you haven't added anything to your cart yet.</p>
+                <button class="aliexpress-red-bg aliexpress-red-hover text-white font-semibold py-2 px-6 rounded-md go-home-btn">Start Shopping</button>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profile-page" class="page p-4">
+                <div class="flex items-center space-x-4 mb-6 pb-6 border-b border-gray-200">
+                    <img src="https://placehold.co/80x80/ff4747/ffffff?text=U" alt="User Avatar" class="w-20 h-20 rounded-full">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">User Name</h2>
+                        <p class="text-sm text-gray-500">user.email@example.com</p>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <a href="#" class="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors">
+                        <span class="text-gray-700"><i class="fas fa-box w-6 mr-2 aliexpress-red-text"></i>My Orders</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </a>
+                    <a href="#" class="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors">
+                        <span class="text-gray-700"><i class="fas fa-map-marker-alt w-6 mr-2 aliexpress-red-text"></i>Shipping Addresses</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </a>
+                    <a href="#" class="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors">
+                        <span class="text-gray-700"><i class="fas fa-cog w-6 mr-2 aliexpress-red-text"></i>Settings</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </a>
+                     <a href="#" class="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors">
+                        <span class="text-gray-700"><i class="fas fa-sign-out-alt w-6 mr-2 aliexpress-red-text"></i>Logout</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
 
         <!-- Bottom Navigation Bar -->
-        <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-t border-t border-gray-200 max-w-md mx-auto h-16 flex justify-around items-center z-30">
-            <a href="#" class="bottom-nav-item aliexpress-red-text"> <!-- Active item in red -->
+        <nav class="bottom-nav sticky bottom-0 bg-white border-t border-gray-200 h-16 flex justify-around items-stretch z-30">
+            <button data-page="home-page" class="bottom-nav-item active-nav">
                 <i class="fas fa-home"></i>
                 <span class="text-xs">Home</span>
-            </a>
-            <a href="#" class="bottom-nav-item">
+            </button>
+            <button data-page="cart-page" class="bottom-nav-item">
                 <i class="fas fa-shopping-cart"></i>
                 <span class="text-xs">Cart</span>
-            </a>
-            <a href="#" class="bottom-nav-item">
+            </button>
+            <button data-page="profile-page" class="bottom-nav-item">
                 <i class="fas fa-user"></i>
                 <span class="text-xs">Profile</span>
-            </a>
+            </button>
         </nav>
-
     </div>
 
-    <!-- Modal for displaying Gemini responses -->
-    <div id="gemini-modal" class="modal hidden">
+    <!-- Modal for Gemini Recommendations -->
+    <div id="gemini-reco-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-4">
-                <h3 id="modal-title" class="text-lg font-semibold text-gray-800">Additional Details</h3>
-                <button id="close-modal-btn" class="text-gray-500 hover:text-gray-700">
+                <h3 id="gemini-reco-modal-title" class="text-lg font-semibold text-gray-800">More Suggestions</h3>
+                <button id="close-gemini-reco-modal-btn" class="text-gray-500 hover:text-gray-700">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div id="modal-body" class="text-sm text-gray-700 leading-relaxed">
-                <div class="flex justify-center items-center h-20">
-                    <div class="loading-spinner"></div> <!-- Spinner will use red from style -->
-                </div>
+            <div id="gemini-reco-modal-body" class="text-sm text-gray-700 leading-relaxed">
+                <div class="flex justify-center items-center h-20"><div class="loading-spinner"></div></div>
             </div>
             <div class="mt-6 text-right">
-                <button id="modal-ok-btn" class="aliexpress-red aliexpress-red-hover px-4 py-2 rounded-md transition-colors">OK</button> <!-- OK button with AliExpress red -->
+                <button id="gemini-reco-modal-ok-btn" class="aliexpress-red-bg aliexpress-red-hover px-4 py-2 rounded-md transition-colors">OK</button>
             </div>
         </div>
     </div>
 
-<script>
-    // Modal elements
-    const geminiModal = document.getElementById('gemini-modal');
-    const closeModalBtn = document.getElementById('close-modal-btn');
-    const modalOkBtn = document.getElementById('modal-ok-btn');
-    const modalTitle = document.getElementById('modal-title');
-    const modalBody = document.getElementById('modal-body');
+    <!-- Search Overlay -->
+    <div id="search-overlay">
+        <div id="search-overlay-content" class="w-full max-w-lg">
+            <div class="flex items-center border-b border-gray-300 pb-2 mb-4">
+                <input type="text" id="search-input" placeholder="Search products, brands..." class="flex-grow appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none">
+                <button id="execute-search-btn" class="aliexpress-red-bg aliexpress-red-hover text-white text-sm font-semibold py-2 px-4 rounded-md">Search</button>
+            </div>
+            <div id="search-results-container" class="text-sm text-gray-600">
+                <p>Start typing to see results or popular searches.</p>
+                <!-- Search results will appear here -->
+            </div>
+            <button id="close-search-overlay-btn" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+        </div>
+    </div>
 
-    // API Configuration
+
+<script>
+    // --- Page Navigation ---
+    const pages = document.querySelectorAll('.page');
+    const navButtons = document.querySelectorAll('.bottom-nav-item');
+    const mainHeader = document.getElementById('main-header');
+    const productDetailHeader = document.getElementById('product-detail-header');
+    const productDetailTitle = document.getElementById('product-detail-title');
+    const homePage = document.getElementById('home-page'); // Reference to home page main content
+
+    function navigateToPage(pageId, productData = null) {
+        pages.forEach(page => page.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+
+        navButtons.forEach(btn => {
+            btn.classList.toggle('active-nav', btn.dataset.page === pageId);
+        });
+
+        if (pageId === 'product-detail-page' && productData) {
+            mainHeader.classList.add('hidden');
+            productDetailHeader.classList.remove('hidden');
+            populateProductDetailPage(productData);
+        } else {
+            mainHeader.classList.remove('hidden');
+            productDetailHeader.classList.add('hidden');
+        }
+        // Scroll to top of the page container
+        document.querySelector('.page-container').scrollTop = 0;
+    }
+
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            navigateToPage(button.dataset.page);
+        });
+    });
+    
+    document.querySelectorAll('.go-home-btn').forEach(button => {
+        button.addEventListener('click', () => navigateToPage('home-page'));
+    });
+
+    document.getElementById('back-to-home-btn').addEventListener('click', () => {
+        navigateToPage('home-page');
+    });
+
+    // --- Search Overlay ---
+    const searchIconBtn = document.getElementById('search-icon-btn');
+    const searchOverlay = document.getElementById('search-overlay');
+    const closeSearchOverlayBtn = document.getElementById('close-search-overlay-btn');
+    const searchInput = document.getElementById('search-input');
+
+    searchIconBtn.addEventListener('click', () => {
+        searchOverlay.classList.add('active', 'flex'); // Use flex to enable alignment
+        searchOverlay.classList.remove('hidden');
+        setTimeout(() => { // Delay for transition
+            searchOverlay.querySelector('#search-overlay-content').classList.add('scale-100', 'opacity-100');
+            searchInput.focus();
+        }, 50);
+    });
+
+    function closeSearch() {
+        searchOverlay.querySelector('#search-overlay-content').classList.remove('scale-100', 'opacity-100');
+        setTimeout(() => {
+            searchOverlay.classList.remove('active', 'flex');
+            searchOverlay.classList.add('hidden');
+        }, 300);
+    }
+    closeSearchOverlayBtn.addEventListener('click', closeSearch);
+    searchOverlay.addEventListener('click', (event) => { // Close on backdrop click
+        if (event.target === searchOverlay) {
+            closeSearch();
+        }
+    });
+     document.getElementById('execute-search-btn').addEventListener('click', () => {
+        const query = searchInput.value;
+        if(query.trim() !== "") {
+            // Placeholder for actual search logic
+            document.getElementById('search-results-container').innerHTML = `<p>Searching for "<strong>${query}</strong>"... (Search results would appear here)</p>`;
+        }
+    });
+
+
+    // --- Product Data & Sections ---
+    const productSectionsData = [
+        {
+            id: 'products-section-main',
+            title: 'Popular Products',
+            products: [
+                { id: 'p1', name: 'Smartphone Pro X', price: '$599', rating: '4.5', sold: '454', image: 'https://placehold.co/300x200/e2e8f0/94a3b8?text=Phone+X' },
+                { id: 'p2', name: 'Wireless Headphones Beats', price: '$129', rating: '4.8', sold: '1020', image: 'https://placehold.co/300x200/dbeafe/60a5fa?text=Headphones' },
+                { id: 'p3', name: 'Smartwatch Series 8', price: '$249', rating: '4.3', sold: '780', image: 'https://placehold.co/300x200/fee2e2/f87171?text=Watch+8' },
+                { id: 'p4', name: 'Portable Speaker JBL', price: '$79', rating: '4.6', sold: '912', image: 'https://placehold.co/300x200/dcfce7/4ade80?text=Speaker' },
+                { id: 'p5', name: 'Tablet Pro 11 inch', price: '$320', rating: '4.7', sold: '650', image: 'https://placehold.co/300x200/e0e7ff/a5b4fc?text=Tablet+Pro' },
+                { id: 'p6', name: 'Gaming Mouse RGB', price: '$45', rating: '4.9', sold: '1200', image: 'https://placehold.co/300x200/f3e8ff/c084fc?text=GamingMouse' }
+            ]
+        },
+        {
+            id: 'recommended-products-section',
+            title: 'Recommended for You',
+            products: [
+                { id: 'r1', name: 'Noise Cancelling Earbuds Pro', price: '$159', rating: '4.8', sold: '800', image: 'https://placehold.co/300x200/f0fdfa/2dd4bf?text=Earbuds+Pro' },
+                { id: 'r2', name: 'Portable SSD 1TB Extreme', price: '$99', rating: '4.7', sold: '550', image: 'https://placehold.co/300x200/fefce8/eab308?text=SSD+1TB' },
+                { id: 'r3', name: 'Wireless Ergonomic Mouse', price: '$35', rating: '4.5', sold: '1200', image: 'https://placehold.co/300x200/faf5ff/a855f7?text=ErgoMouse' },
+                { id: 'r4', name: '4K Webcam with Ring Light', price: '$65', rating: '4.6', sold: '350', image: 'https://placehold.co/300x200/fff7ed/fb923c?text=Webcam+4K' },
+                { id: 'r5', name: 'Mechanical Keyboard TKL', price: '$89', rating: '4.8', sold: '720', image: 'https://placehold.co/300x200/fef2f2/f87171?text=Keyboard' },
+                { id: 'r6', name: 'Smart LED Light Strip 5m', price: '$25', rating: '4.4', sold: '1500', image: 'https://placehold.co/300x200/ecfdf5/34d399?text=LED+Strip' }
+            ]
+        },
+        {
+            id: 'hot-deals-section',
+            title: 'Hot Deals 🔥',
+            products: [
+                { id: 'hd1', name: 'Ultra HD Smart TV 55"', price: '$399', rating: '4.7', sold: '250', image: 'https://placehold.co/300x200/fef9c3/facc15?text=Smart+TV' },
+                { id: 'hd2', name: 'Robot Vacuum Cleaner X1', price: '$199', rating: '4.6', sold: '480', image: 'https://placehold.co/300x200/ffedd5/fb923c?text=RobotVacuum' },
+                { id: 'hd3', name: 'Air Fryer XL 5.5L', price: '$75', rating: '4.8', sold: '1100', image: 'https://placehold.co/300x200/ecfdf5/34d399?text=AirFryer' },
+                { id: 'hd4', name: 'Electric Scooter Pro', price: '$299', rating: '4.5', sold: '180', image: 'https://placehold.co/300x200/eff6ff/60a5fa?text=Scooter' },
+                { id: 'hd5', name: 'Fitness Tracker Band 7', price: '$39', rating: '4.7', sold: '2200', image: 'https://placehold.co/300x200/f0f9ff/38bdf8?text=FitnessBand' },
+                { id: 'hd6', name: 'Coffee Maker with Grinder', price: '$120', rating: '4.6', sold: '310', image: 'https://placehold.co/300x200/fdf4ff/e879f9?text=CoffeeMaker' }
+            ]
+        },
+        {
+            id: 'new-arrivals-section',
+            title: 'New Arrivals ✨',
+            products: [
+                { id: 'na1', name: 'Drone Mini Foldable 4K', price: '$189', rating: '4.5', sold: '90', image: 'https://placehold.co/300x200/f5f3ff/8b5cf6?text=Drone+Mini' },
+                { id: 'na2', name: 'Smart Glasses Audio', price: '$149', rating: '4.3', sold: '60', image: 'https://placehold.co/300x200/ecfeff/22d3ee?text=SmartGlasses' },
+                { id: 'na3', name: 'Portable Projector HD', price: '$119', rating: '4.6', sold: '150', image: 'https://placehold.co/300x200/f0fdf4/4ade80?text=Projector' },
+                { id: 'na4', name: 'VR Headset NextGen', price: '$349', rating: '4.7', sold: '110', image: 'https://placehold.co/300x200/fdf2f8/f472b6?text=VR+Headset' },
+                { id: 'na5', name: 'Wireless Charging Stand 3-in-1', price: '$49', rating: '4.8', sold: '950', image: 'https://placehold.co/300x200/fffbeb/f59e0b?text=Charger3in1' },
+                { id: 'na6', name: 'Smart Water Bottle UV', price: '$30', rating: '4.5', sold: '400', image: 'https://placehold.co/300x200/ebf4ff/60a5fa?text=SmartBottle' }
+            ]
+        },
+        {
+            id: 'gadget-zone-section',
+            title: 'Gadget Zone 🚀',
+            products: [
+                { id: 'gz1', name: '3D Printer Ender V3', price: '$220', rating: '4.7', sold: '200', image: 'https://placehold.co/300x200/f1f5f9/64748b?text=3DPrinter' },
+                { id: 'gz2', name: 'Raspberry Pi 5 Kit', price: '$95', rating: '4.9', sold: '600', image: 'https://placehold.co/300x200/fee2e2/ef4444?text=RaspberryPi' },
+                { id: 'gz3', name: 'Soldering Iron Kit Digital', price: '$40', rating: '4.6', sold: '700', image: 'https://placehold.co/300x200/ffedd5/f97316?text=SolderingKit' },
+                { id: 'gz4', name: 'Handheld Retro Game Console', price: '$60', rating: '4.5', sold: '850', image: 'https://placehold.co/300x200/fef9c3/eab308?text=RetroConsole' },
+                { id: 'gz5', name: 'USB Microscope Digital', price: '$30', rating: '4.4', sold: '530', image: 'https://placehold.co/300x200/ecfccb/84cc16?text=Microscope' },
+                { id: 'gz6', name: 'Laser Engraver Mini', price: '$150', rating: '4.3', sold: '120', image: 'https://placehold.co/300x200/dbeafe/3b82f6?text=LaserEngraver' }
+            ]
+        }
+    ];
+
+    function createProductCard(product) {
+        const card = document.createElement('div');
+        card.className = 'product-card'; // Tailwind classes are applied via @apply in <style>
+        card.dataset.productId = product.id; // Store product ID for later use
+
+        card.innerHTML = `
+            <img src="${product.image}" alt="${product.name}" onerror="this.src='https://placehold.co/300x200/e0e0e0/757575?text=Img+Error';">
+            <div class="product-card-content">
+                <h3 class="product-name">${product.name}</h3>
+                <div class="flex items-center justify-between text-xs mt-1 mb-1.5">
+                    <p class="font-bold aliexpress-red-text text-sm sm:text-base">${product.price}</p>
+                    <div class="flex items-center text-gray-400">
+                        <i class="fas fa-star text-yellow-400 text-xs mr-0.5"></i>
+                        <span>${product.rating}</span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-400 mb-1.5">${product.sold} sold</p>
+                <button class="generate-details-btn mt-auto text-xs aliexpress-red-text hover:text-red-700 self-start pt-1">✨ See more details</button>
+            </div>
+        `;
+        card.addEventListener('click', () => {
+             // Find the full product data from our main data source
+            let fullProductData = null;
+            for (const section of productSectionsData) {
+                fullProductData = section.products.find(p => p.id === product.id);
+                if (fullProductData) break;
+            }
+            if (fullProductData) {
+                navigateToPage('product-detail-page', fullProductData);
+            } else {
+                console.error("Could not find product data for ID:", product.id);
+            }
+        });
+        return card;
+    }
+
+    function populateProductSections() {
+        const homePageMain = document.getElementById('home-page');
+        productSectionsData.forEach(sectionData => {
+            const sectionElement = document.createElement('section');
+            sectionElement.className = 'mb-5'; // Spacing between sections
+            sectionElement.innerHTML = `<h2 class="text-base sm:text-lg font-semibold text-gray-700 mb-2">${sectionData.title}</h2>`;
+            
+            const productListDiv = document.createElement('div');
+            productListDiv.id = sectionData.id;
+            productListDiv.className = 'flex space-x-3 overflow-x-auto pb-3'; // Horizontal scroll
+            
+            sectionData.products.forEach(product => {
+                productListDiv.appendChild(createProductCard(product));
+            });
+            sectionElement.appendChild(productListDiv);
+            homePageMain.appendChild(sectionElement); // Append to home page main content
+        });
+    }
+    
+    // --- Product Detail Page ---
+    const detailProductName = document.getElementById('detail-product-name');
+    const detailProductImage = document.getElementById('detail-product-image');
+    const detailProductPrice = document.getElementById('detail-product-price');
+    const detailProductRating = document.getElementById('detail-product-rating');
+    const detailProductSold = document.getElementById('detail-product-sold');
+    const detailProductDescription = document.getElementById('detail-product-description');
+
+    async function populateProductDetailPage(product) {
+        detailProductName.textContent = product.name;
+        productDetailTitle.textContent = product.name; // Update header title
+        detailProductImage.src = product.image.replace('300x200', '600x400'); // Request larger image
+        detailProductImage.alt = product.name;
+        detailProductPrice.textContent = product.price;
+        detailProductRating.textContent = product.rating;
+        detailProductSold.textContent = product.sold;
+        
+        detailProductDescription.innerHTML = `<div class="flex justify-center items-center h-full"><div class="loading-spinner"></div> <p class="ml-2 text-gray-500">Loading details...</p></div>`;
+
+        const prompt = `Generate an engaging and detailed product description in English for a product named "${product.name}". This product is sold on an e-commerce app. Elaborate on its key features, benefits, and potential use cases for a buyer. Aim for around 100-150 words. Start with a catchy phrase about the product.`;
+        const description = await callGeminiAPI(prompt);
+        detailProductDescription.innerHTML = description.replace(/\n/g, '<br>');
+    }
+
+
+    // --- Gemini API Modal & Calls (Recommendations Modal) ---
+    const geminiRecoModal = document.getElementById('gemini-reco-modal');
+    const closeGeminiRecoModalBtn = document.getElementById('close-gemini-reco-modal-btn');
+    const geminiRecoModalOkBtn = document.getElementById('gemini-reco-modal-ok-btn');
+    const geminiRecoModalTitle = document.getElementById('gemini-reco-modal-title');
+    const geminiRecoModalBody = document.getElementById('gemini-reco-modal-body');
+
     const apiKey = ""; // Canvas will provide this
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
-    function showModal(title = "Additional Details", isLoading = true, content = "") {
-        modalTitle.textContent = title;
+    function showGeminiRecoModal(title = "More Suggestions", isLoading = true, content = "") {
+        geminiRecoModalTitle.textContent = title;
         if (isLoading) {
-            modalBody.innerHTML = `<div class="flex justify-center items-center h-20"><div class="loading-spinner"></div></div> <p class="text-center text-gray-500 mt-2">Fetching information...</p>`;
+            geminiRecoModalBody.innerHTML = `<div class="flex justify-center items-center h-20"><div class="loading-spinner"></div></div> <p class="text-center text-gray-500 mt-2">Fetching suggestions...</p>`;
         } else {
-            modalBody.innerHTML = content.replace(/\n/g, '<br>');
+            geminiRecoModalBody.innerHTML = content.replace(/\n/g, '<br>');
         }
-        geminiModal.classList.remove('hidden');
-        geminiModal.classList.add('active');
+        geminiRecoModal.classList.add('active');
     }
 
-    function hideModal() {
-        geminiModal.classList.add('hidden');
-        geminiModal.classList.remove('active');
+    function hideGeminiRecoModal() {
+        geminiRecoModal.classList.remove('active');
     }
 
-    closeModalBtn.addEventListener('click', hideModal);
-    modalOkBtn.addEventListener('click', hideModal);
-    geminiModal.addEventListener('click', (event) => {
-        if (event.target === geminiModal) {
-            hideModal();
+    closeGeminiRecoModalBtn.addEventListener('click', hideGeminiRecoModal);
+    geminiRecoModalOkBtn.addEventListener('click', hideGeminiRecoModal);
+    geminiRecoModal.addEventListener('click', (event) => {
+        if (event.target === geminiRecoModal) {
+            hideGeminiRecoModal();
         }
     });
 
@@ -308,70 +580,49 @@
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error("Gemini API Error:", errorData);
-                throw new Error(`API request failed with status ${response.status}: ${errorData.error?.message || 'Unknown error'}`);
+                throw new Error(`API request failed: ${errorData.error?.message || response.status}`);
             }
             const result = await response.json();
-            if (result.candidates && result.candidates.length > 0 &&
-                result.candidates[0].content && result.candidates[0].content.parts &&
-                result.candidates[0].content.parts.length > 0) {
+            if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) {
                 return result.candidates[0].content.parts[0].text;
             } else {
                 console.error("Unexpected API response structure:", result);
-                throw new Error("Could not retrieve information from Gemini.");
+                throw new Error("Could not retrieve valid information from Gemini.");
             }
         } catch (error) {
             console.error("Error calling Gemini API:", error);
-            return `An error occurred: ${error.message}. Please try again later.`;
+            return `An error occurred: ${error.message}. Please try again.`;
         }
     }
+    
+    // This button is no longer on product cards, but the logic is kept for the "Get more recommendations" button
+    // If you add a similar button elsewhere, you can adapt this.
+    // For now, the "See more details" functionality is handled by the card click event.
 
-    document.querySelectorAll('.generate-details-btn').forEach(button => {
-        button.addEventListener('click', async (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-
-            const card = event.target.closest('.product-card');
-            const productNameElement = card.querySelector('.product-name');
-            if (!productNameElement) {
-                console.error("Product name element not found in card:", card);
-                showModal("Error", false, "Could not find the product name.");
-                return;
-            }
-            const productName = productNameElement.textContent.trim();
-            
-            showModal(`Details for "${productName}"`);
-
-            const prompt = `Generate an engaging and concise product description in English for a product named "${productName}". This product is sold on an e-commerce app. Highlight its key features and benefits for a potential buyer. Keep it under 80 words. Start with the product name.`;
-            
-            const description = await callGeminiAPI(prompt);
-            showModal(`Details for "${productName}"`, false, description);
-        });
-    });
-
-    const getMoreRecommendationsBtn = document.getElementById('get-more-recommendations-btn');
-    if (getMoreRecommendationsBtn) {
+    const getMoreRecommendationsBtn = document.getElementById('get-more-recommendations-btn'); // Assuming this button still exists
+    if (getMoreRecommendationsBtn) { // Check if the button exists on the current page (e.g., home page)
         getMoreRecommendationsBtn.addEventListener('click', async () => {
-            const recommendedSection = document.getElementById('recommended-products-section');
-            const currentProducts = Array.from(recommendedSection.querySelectorAll('.product-name'))
+            // Get some product names from the current view to base recommendations on
+            const productElements = document.querySelectorAll('#home-page .product-name'); // Get from home page
+            let currentProducts = Array.from(productElements)
                                         .map(el => el.textContent.trim())
-                                        .slice(0, 3);
+                                        .slice(0, 3); // Take first 3 for prompt brevity
 
-            if (currentProducts.length === 0) {
-                showModal("Additional Recommendations", false, "No current products to base recommendations on.");
-                return;
+            if (currentProducts.length === 0) { // Fallback if no products found on home page
+                 currentProducts = ["Smartphone", "Wireless Headphones", "Smartwatch"]; // Generic fallback
             }
 
-            showModal("Additional Recommendations");
+            showGeminiRecoModal("Fetching New Suggestions");
 
-            const prompt = `Based on these electronics and accessories: "${currentProducts.join('", "')}", suggest 3 more distinct product names that a user might also be interested in for an e-commerce app. Provide only the product names, each on a new line. For example: Smart Thermostat\nWireless Charger\nVR Headset. Respond in English as product names are usually in English.`;
+            const prompt = `Based on general e-commerce trends for items like "${currentProducts.join('", "')}", suggest 3 more distinct product names that a user might also be interested in. Provide only the product names, each on a new line. For example: Smart Thermostat\nWireless Charger\nVR Headset. Respond in English.`;
             
             const recommendationsText = await callGeminiAPI(prompt);
             
             let recommendationsHtml = recommendationsText;
-            if (typeof recommendationsText === 'string') {
+            if (typeof recommendationsText === 'string' && !recommendationsText.startsWith("An error occurred")) {
                 const newRecs = recommendationsText.split('\n').filter(rec => rec.trim() !== '');
                 if (newRecs.length > 0) {
-                    recommendationsHtml = "<strong>New Suggested Products:</strong><ul class='list-disc list-inside mt-2'>";
+                    recommendationsHtml = "<strong>Here are some more ideas:</strong><ul class='list-disc list-inside mt-2 space-y-1'>";
                     newRecs.forEach(rec => {
                         recommendationsHtml += `<li>${rec.trim()}</li>`;
                     });
@@ -381,11 +632,17 @@
                 }
             }
             
-            showModal("Additional Recommendations", false, recommendationsHtml);
+            showGeminiRecoModal("New Suggestions", false, recommendationsHtml);
         });
     }
 
-    console.log("The Phone Store initialized with Gemini features and AliExpress color theme.");
+
+    // --- Initialize App ---
+    document.addEventListener('DOMContentLoaded', () => {
+        populateProductSections(); // Dynamically create product sections and cards
+        navigateToPage('home-page'); // Start on home page
+        console.log("The Phone Store Pro initialized with multiple pages and enhanced features.");
+    });
 
 </script>
 
