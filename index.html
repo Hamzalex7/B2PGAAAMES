@@ -1,650 +1,1014 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Phone Store - Pro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            overscroll-behavior-y: contain; /* Prevents pull-to-refresh on body for main container */
-        }
-        .page-container {
-            overscroll-behavior-y: auto; /* Allow normal scroll within pages */
-        }
+  <meta charset="UTF-8">
+  <title>B2PGAMES</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover and download the best mobile games for Android and iOS.">
+  <meta name="keywords" content="mobile games, download games, android games, ios games, free games, new games, trending games, best mobile games">
 
-        .page {
-            display: none; /* All pages hidden by default */
-            min-height: calc(100vh - 4rem - 4rem); /* Full height minus header and footer */
-        }
-        .page.active {
-            display: block; /* Show active page */
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            height: 8px; /* Increased size for better touch on product carousels */
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f9f9f9; /* Lighter track */
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ddd; /* Lighter thumb */
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #bbb; /* Darker on hover */
-        }
-        .bottom-nav {
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
-        }
-        .bottom-nav-item {
-            @apply flex flex-col items-center justify-center text-gray-500 hover:text-red-500 transition-colors duration-200 flex-1 pt-1 pb-1;
-        }
-        .bottom-nav-item.active-nav {
-            @apply text-red-500; /* AliExpress: red for active nav */
-        }
-        .bottom-nav-item i {
-            @apply text-xl mb-0.5;
-        }
-        .bottom-nav-item span {
-            @apply text-xs;
-        }
-        .product-card {
-            min-width: 150px; /* Adjusted for more items */
-            width: 40%;    /* Aim for 2.5 cards visible */
-            max-width: 170px;
-            @apply bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex-shrink-0 flex flex-col;
-        }
-         .product-card img {
-            @apply w-full h-32 object-cover;
-        }
-        .product-card-content {
-            @apply p-2 sm:p-3 flex flex-col flex-grow;
-        }
-        .product-card .product-name {
-             @apply text-xs sm:text-sm font-semibold text-gray-800 mb-1 leading-tight;
-             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-        }
+  <script type="text/javascript">
+  (function() {
+      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      var inAppKeywords = [
+          'FBAN',       // Facebook App Android
+          'FBIOS',      // Facebook App iOS
+          'Instagram',  // Instagram App
+          'WebView',    // Hadi kayna f bezzaf dyal les apps
+          'wv)',        // Android WebView
+          'MetaShell',  // Dakchi dyal Meta (Facebook, Instagram)
+          'Aweme',      // TikTok
+          'TikTok'      // TikTok
+      ];
+      var isMobile = /android|iphone|ipad|ipod/i.test(userAgent.toLowerCase());
+      var isLikelyInApp = false;
+      for (var i = 0; i < inAppKeywords.length; i++) {
+          if (userAgent.indexOf(inAppKeywords[i]) > -1) {
+              isLikelyInApp = true;
+              break;
+          }
+      }
+      if (/FB_IAB|FB4A|FBAN|FBIOS|FBSS/i.test(userAgent)) {
+          isLikelyInApp = true;
+      }
+      if (/\sInstagram\s/i.test(userAgent)) {
+           isLikelyInApp = true;
+      }
 
+      if (isMobile && isLikelyInApp) {
+          window.location.href = 'unsupported_browser.html';
+      }
+  })();
+  </script>
+  <link rel="icon" href="favicon.ico">
+  <style>
+    :root {
+      --primary: #111;
+      --primary-text: #222;
+      --secondary-text: #555;
+      --dark: #171e28;
+      --light: #f7faff;
+      --accent: #33e1ed;
+      --radius: 16px;
+      --shadow: 0 4px 20px rgba(30,144,255,0.08);
+      --modalShadow: 0 8px 50px 0 rgba(30, 144, 255, 0.17);
+      --card-bg: #fff;
+      --border-color: #eee;
+      --header-footer-text: #fff;
+      --button-text-color-on-light: #222; 
+      --button-text-color-on-dark: #fff;  
+      --toggle-button-bg: #f0f0f0;
+      --toggle-button-border: #ccc;
+      --icon-sun-color: #f39c12; 
+      --icon-moon-color: #555; 
+    }
 
-        /* Modal styles */
-        .modal-overlay { /* Changed from .modal to .modal-overlay */
-            @apply fixed inset-0 bg-gray-800 bg-opacity-75 overflow-y-auto h-full w-full flex items-center justify-center z-50 transition-opacity duration-300 opacity-0 pointer-events-none;
-        }
-        .modal-overlay.active {
-             @apply opacity-100 pointer-events-auto;
-        }
-        .modal-content {
-            @apply bg-white p-5 sm:p-6 rounded-lg shadow-xl w-11/12 max-w-md mx-auto transform transition-all duration-300 scale-95 opacity-0;
-        }
-        .modal-overlay.active .modal-content {
-            @apply scale-100 opacity-100;
-        }
-        .loading-spinner {
-            border-top-color: #ff4747; /* AliExpress: red */
-            @apply inline-block w-6 h-6 border-4 border-gray-200 border-solid rounded-full animate-spin;
-        }
+    body.dark-mode {
+      --primary: #f0f0f0;
+      --primary-text: #e0e0e0;
+      --secondary-text: #b0b0b0;
+      --dark: #121212;
+      --light: #1a1a1a;
+      --shadow: 0 4px 20px rgba(0,0,0,0.25);
+      --modalShadow: 0 8px 50px 0 rgba(0,0,0,0.3);
+      --card-bg: #2c2c2c;
+      --border-color: #444;
+      --header-footer-text: #f0f0f0;
+      --toggle-button-bg: #333;
+      --toggle-button-border: #555;
+      --icon-sun-color: #f1c40f; 
+      --icon-moon-color: #e0e0e0; 
+    }
 
-        /* AliExpress Color Palette */
-        .aliexpress-red-bg {
-            background-color: #ff4747;
-            color: white;
-        }
-        .aliexpress-red-text {
-            color: #ff4747;
-        }
-        .aliexpress-red-hover:hover {
-            background-color: #e63939;
-        }
-        .aliexpress-secondary-button {
-            @apply bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full text-xs sm:text-sm shadow-sm hover:bg-gray-200 transition-colors flex-shrink-0;
-        }
-        .aliexpress-active-category {
-             @apply aliexpress-red-bg text-white px-3 py-1.5 rounded-full text-xs sm:text-sm shadow-sm flex-shrink-0;
-        }
-        .product-detail-image {
-            max-height: 300px;
-            @apply w-full object-contain rounded-md bg-gray-100;
-        }
-        .detail-add-to-cart-btn {
-            @apply w-full aliexpress-red-bg aliexpress-red-hover text-white font-semibold py-3 px-4 rounded-md transition-colors duration-200 flex items-center justify-center;
-        }
-         .detail-buy-now-btn {
-            @apply w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-4 rounded-md transition-colors duration-200 flex items-center justify-center;
-        }
-        /* Search Overlay */
-        #search-overlay {
-            @apply fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-start justify-center pt-16 sm:pt-24;
-        }
-        #search-overlay-content {
-            @apply bg-white p-4 sm:p-6 rounded-lg shadow-xl w-11/12 max-w-lg transform transition-all duration-300 scale-95 opacity-0;
-        }
-         #search-overlay.active #search-overlay-content {
-            @apply scale-100 opacity-100;
-        }
+    * {box-sizing: border-box; margin: 0; padding: 0;}
+    html, body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--light);
+      color: var(--primary-text);
+      scroll-behavior: smooth;
+      min-height: 150vh;
+      transition: background 0.3s, color 0.3s;
+    }
+    .main-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      z-index: 100;
+      background: #181818;
+      color: var(--header-footer-text);
+      padding: 12px 20px; /* Adjusted padding for flex alignment */
+      border-bottom-left-radius: 38px;
+      border-bottom-right-radius: 38px;
+      box-shadow: 0 4px 18px 0 #1118;
+      transition: top 0.4s, padding 0.3s;
+      display: flex; /* For aligning title and button */
+      align-items: center; /* Vertical centering */
+      justify-content: center; /* Horizontal centering of the group */
+    }
+    body.dark-mode .main-header {
+        background: #1f1f1f; 
+        color: var(--header-footer-text);
+    }
+    .main-header.hide-header {
+      top: -90px; /* Adjusted based on potential new height */
+    }
+    .main-header h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      color: var(--header-footer-text);
+      margin: 0; /* Removed bottom margin */
+      text-shadow: 0 2px 18px #1673e7a8;
+      /* padding-bottom: 8px; Removed, handled by header padding & align-items */
+    }
+    @media (max-width:700px) { 
+      .main-header {
+        padding: 8px 15px; /* Adjusted padding for mobile */
+      }
+      .main-header h1 { font-size: 1.2rem; }
+    }
+    footer {
+      background: #171e28; 
+      color: var(--header-footer-text);
+      text-align: center;
+      padding: 18px 0 11px 0;
+      border-top-left-radius: 38px;
+      border-top-right-radius: 38px;
+      box-shadow: 0 -4px 24px 0 #212c4033;
+      font-size: 0.96rem;
+      animation: fadeInUp 1.3s;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100vw;
+      z-index: 10;
+      transition: bottom 0.4s;
+    }
+    body.dark-mode footer {
+        background: #1f1f1f;
+        color: var(--header-footer-text);
+        box-shadow: 0 -4px 24px 0 rgba(0,0,0,0.2);
+    }
+    footer.hide-footer {
+      bottom: -80px;
+    }
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px 12px;
+      padding: 100px 2vw 30px 2vw; 
+      max-width: 510px;
+      margin: 0 auto 0 auto;
+      animation: fadeInUp 1.2s;
+    }
+    @media (min-width: 800px) {
+      .games-grid {
+        grid-template-columns: repeat(4, 1fr);
+        max-width: 820px;
+        gap: 30px 16px;
+        padding-top: 110px; 
+      }
+    }
+    .game-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 4px 12px 4px;
+      min-height: 188px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), background 0.3s;
+      animation: popIn 0.7s;
+    }
+    .game-card:hover {
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 7px 26px 0 rgba(30,144,255,0.13);
+    }
+    body.dark-mode .game-card:hover {
+        box-shadow: 0 7px 26px 0 rgba(51, 225, 237, 0.2); 
+    }
+    .game-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 13px;
+      object-fit: cover;
+      margin-bottom: 7px;
+      border: 2.5px solid var(--primary); 
+      box-shadow: 0 2px 7px 0 #1e90ff18;
+      background: #e6f0fa; 
+      transition: box-shadow 0.22s, border-color 0.3s;
+    }
+    body.dark-mode .game-img {
+        background: #3a3a3a; 
+        border-color: var(--accent); 
+    }
+    .game-title {
+      font-size: 0.98rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: var(--primary); 
+      text-align: center;
+      letter-spacing: .5px;
+      transition: color 0.3s;
+    }
+    .game-desc {
+      font-size: 0.87rem;
+      color: var(--secondary-text); 
+      text-align: center;
+      margin-bottom: 8px;
+      min-height: 22px;
+      max-width: 97%;
+      line-height: 1.35;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: color 0.3s;
+    }
+    .readmore-link {
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 0.91em;
+      font-weight: bold;
+      margin-left: 4px;
+      background: none;
+      border: none;
+    }
+    .download-btn {
+      width: 100%;
+      max-width: 180px;
+      margin: 0 auto;
+      display: block;
+      background: linear-gradient(90deg, #14181a 0%, #23272b 100%);
+      color: #fff; 
+      font-size: 1.16rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 0 11px 0;
+      box-shadow: 0 2px 12px 0 #181d2233;
+      cursor: pointer;
+      transition: background .18s, box-shadow .18s, filter .18s;
+      letter-spacing: .5px;
+      outline: none;
+    }
+    .download-btn:hover,
+    .download-btn:focus {
+      background: linear-gradient(90deg, #23272b 0%, #14181a 100%);
+      filter: brightness(1.09);
+      box-shadow: 0 4px 18px 0 #191e2444;
+    }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      top:0; left:0; width:100vw; height:100vh;
+      background: rgba(10,15,30,0.88);
+      justify-content: center;
+      align-items: center;
+      animation: fadeInUp 0.9s;
+    }
+    body.dark-mode .modal-overlay {
+        background: rgba(0,0,0,0.88); 
+    }
+    .modal-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      max-width: 360px;
+      width: 98vw;
+      box-shadow: var(--modalShadow);
+      padding: 0 0 18px 0;
+      position: relative;
+      animation: popIn 0.45s;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px; right: 18px;
+      background: none;
+      border: none;
+      color: var(--secondary-text); 
+      font-size: 1.8rem;
+      cursor: pointer;
+      font-weight: 300;
+      z-index: 10;
+      transition: color 0.3s;
+    }
+    .modal-preview-img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      background: #eee; 
+      display: block;
+    }
+    body.dark-mode .modal-preview-img {
+        background: #444; 
+    }
+    .modal-header-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px 0 16px;
+    }
+    .modal-game-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      object-fit: cover;
+      border: 2px solid var(--border-color); 
+      box-shadow: 0 1px 5px #3331;
+      margin-right: 4px;
+      background: #fafbfc; 
+      transition: border-color 0.3s, background 0.3s;
+    }
+    body.dark-mode .modal-game-img {
+        background: #3a3a3a; 
+    }
+    .modal-header-row h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1px;
+      color: #17213b; 
+      transition: color 0.3s;
+    }
+    body.dark-mode .modal-header-row h2 {
+      color: var(--primary-text);
+    }
+    .modal-header-row p {
+      color: #84899a; 
+      font-size: 0.9rem;
+      margin: 0;
+      transition: color 0.3s;
+    }
+    body.dark-mode .modal-header-row p {
+      color: var(--secondary-text);
+    }
+    .modal-counters {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px 0 16px;
+      font-size: 0.95rem;
+    }
+    .modal-counters div {
+      text-align: center;
+      background: #f4f9ff; 
+      border-radius: 10px;
+      padding: 6px 0;
+      width: 32%;
+      font-weight: bold;
+      color: #1a2237; 
+      box-shadow: 0 1px 5px #e4eaff5e;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark-mode .modal-counters div {
+      background: #3a3a3a;
+      color: var(--primary-text);
+    }
+    .modal-counters small {
+      display: block;
+      color: #61687c; 
+      font-size: 0.8rem;
+      margin-top: 1px;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    body.dark-mode .modal-counters small {
+      color: var(--secondary-text);
+    }
+    .modal-download-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 82%;
+      margin: 13px auto 0 auto;
+    }
+    .modal-download-btns a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      border: none;
+      border-radius: 22px;
+      font-size: 1.07rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 20px #8882;
+      transition: background .22s, transform .18s;
+      letter-spacing: 0.8px;
+      padding: 10px 0;
+      text-decoration: none;
+      margin-bottom: 0;
+    }
+    .modal-download-btns a.android {
+      background: linear-gradient(90deg, #3ddc84 0%, #1cb960 100%);
+      box-shadow: 0 2px 20px #3ddc8414;
+      margin-bottom: 4px;
+    }
+    .modal-download-btns a.ios {
+      background: linear-gradient(90deg, #333 0%, #888 100%);
+    }
+    .modal-download-btns img {
+      height: 22px;
+      width: 22px;
+      margin-right: 10px;
+    }
+    .modal-about {
+      margin: 11px 16px 0 16px;
+      font-size: 0.97rem;
+      color: #333; 
+      transition: color 0.3s;
+    }
+    body.dark-mode .modal-about {
+      color: var(--primary-text);
+    }
+    .modal-about strong {
+      display: block;
+      margin-bottom: 3px;
+      color: #232c45; 
+      transition: color 0.3s;
+    }
+    body.dark-mode .modal-about strong {
+      color: var(--primary); 
+    }
+    .modal-about .read-more-btn {
+      display: inline-block;
+      margin: 7px 0 0 0;
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 0.93rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .loader-overlay {
+      display: none;
+      position: fixed;
+      z-index: 3000;
+      top:0; left:0; width:100vw; height:100vh;
+      background: rgba(12,16,28,0.95);
+      justify-content: center;
+      align-items: center;
+      animation: fadeInUp 0.9s;
+    }
+    body.dark-mode .loader-overlay {
+        background: rgba(0,0,0,0.95);
+    }
+    .loader-card {
+      background: var(--card-bg); 
+      border-radius: 18px;
+      padding: 18px 12px 18px 12px;
+      width: 90vw;
+      max-width: 230px;
+      min-height: 130px;
+      box-shadow: var(--shadow); 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: popIn 0.65s;
+      transition: background 0.3s;
+    }
+    .loader-logo {
+      font-size: 1.08rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: var(--primary); 
+      margin-bottom: 12px;
+      transition: color 0.3s;
+    }
+    .loader-progress-bar {
+      width: 100%;
+      background: #e5f2ff; 
+      height: 12px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px #527fae12;
+      transition: background 0.3s;
+    }
+    body.dark-mode .loader-progress-bar {
+      background: #4a4a4a; 
+    }
+    .loader-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #33e1ed 0%, #21b6f3 100%); 
+      transition: width 0.35s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 2px 7px #33e1ed11;
+    }
+    .loader-stats {
+      width: 100%;
+      display: flex;
+      justify-content: center; 
+      color: var(--secondary-text); 
+      font-size: 0.93rem;
+      margin-bottom: 7px;
+      transition: color 0.3s;
+    }
+    .loader-verify {
+      display: none;
+      margin-top: 8px;
+      text-align: center;
+      font-size: 0.93rem;
+      color: var(--primary-text); 
+    }
+    body.dark-mode .loader-verify {
+        color: var(--primary-text);
+    }
+    .loader-verify p {
+        color: inherit; 
+    }
+    .loader-cpa-btn {
+      display: inline-block;
+      margin-top: 6px;
+      background: #000000; 
+      color: #ffffff; 
+      padding: 7px 16px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: background .22s, transform .18s, color .22s;
+      box-shadow: 0 2px 10px #1e90ff16; 
+      letter-spacing: 0.5px;
+    }
+    body.dark-mode .loader-cpa-btn { 
+        background: var(--accent);
+        color: #111; 
+        box-shadow: 0 2px 10px rgba(51, 225, 237, 0.2);
+    }
+    .loader-cpa-btn:hover {
+      background: #333333; 
+      transform: scale(1.045); 
+    }
+    body.dark-mode .loader-cpa-btn:hover {
+        background: #29c4d0; 
+        color: #000;
+    }
 
-    </style>
+    #darkModeToggle {
+        /* Removed position: absolute, top, right */
+        margin-left: 15px; /* Space next to the title */
+        width: 38px; 
+        height: 38px;
+        padding: 0;
+        background-color: var(--toggle-button-bg) ; 
+        border: 1px solid var(--toggle-button-border); 
+        border-radius: 50%; 
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s, border-color 0.3s;
+        /* z-index: 101; No longer needed as it's in normal flow */
+        overflow: hidden; 
+        user-select: none;
+        -webkit-user-select: none;
+        flex-shrink: 0; /* Prevent shrinking */
+    }
+    #darkModeToggle:hover {
+        filter: brightness(0.9);
+    }
+
+    .icon-sun, .icon-moon {
+        position: absolute; 
+        width: 20px; 
+        height: 20px;
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+
+    .icon-sun {
+        background-color: var(--icon-sun-color);
+        border-radius: 50%;
+        opacity: 0; 
+        transform: scale(0.6) rotate(-90deg);
+    }
+    .icon-moon {
+        border-radius: 50%;
+        box-shadow: inset -5px 2px 0 0 var(--icon-moon-color); 
+        opacity: 0; 
+        transform: scale(0.6) rotate(90deg);
+    }
+
+    body:not(.dark-mode) #darkModeToggle .icon-moon {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+    body.dark-mode #darkModeToggle .icon-sun {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+   
+    @media (max-width:700px) { 
+      #darkModeToggle { 
+        margin-left: 10px; /* Adjusted margin for mobile */
+        width: 34px;
+        height: 34px;
+      }
+      .icon-sun, .icon-moon {
+        width: 18px;
+        height: 18px;
+      }
+       .icon-moon { box-shadow: inset -4px 1px 0 0 var(--icon-moon-color); }
+    }
+   
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(50px);}
+      100% {opacity:1; transform: none;}
+    }
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.88);}
+      100% {opacity:1; transform: scale(1);}
+    }
+    @keyframes bounceIn {
+      0% { transform: scale(0.8);}
+      60% { transform: scale(1.12);}
+      80% { transform: scale(0.98);}
+      100% { transform: scale(1);}
+    }
+  </style>
 </head>
-<body class="bg-gray-100" dir="ltr">
+<body>
+  <header id="mainHeader" class="main-header">
+    <h1>B2PGAMES</h1>
+    <button id="darkModeToggle" aria-label="Toggle theme">
+        <span class="icon-sun"></span>
+        <span class="icon-moon"></span>
+    </button>
+  </header>
 
-    <div class="container mx-auto max-w-md bg-white shadow-lg min-h-screen flex flex-col">
+  <main>
+    <section class="games-grid" aria-label="Games list">
+      <div class="game-card"
+        data-title="GTA V MOBILE"
+        data-img="https://i.pinimg.com/736x/f6/d9/c4/f6d9c419a2abe5b5bb4b7b570e8c74ce.jpg"
+        data-preview="https://i.pinimg.com/736x/f6_59/4d/f6594dedd69fe7a11608890c2c180e35.jpg"
+        data-desc="GTA V (Grand Theft Auto V) is a critically acclaimed open-world game developed by Rockstar Games. Experience the high-stakes life of three unique criminals in the sprawling city of Los Santos."
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp" 
+      >
+        <img class="game-img" src="https://i.pinimg.com/736x/b8/e1/8e/b8e18e6be3f2d04729717afd4e656556.jpg" alt="GTA V">
+        <div class="game-title">GTA V MOBILE</div>
+        <div class="game-desc">GTA V (Grand Theft Auto V) is a critically acclaimed open-world game developed by Rockstar Games. Experience the high-stakes life of three unique criminals in the sprawling city of Los Santos.</div>
+        <button class="download-btn">Download</button>
+      </div>
+      <div class="game-card"
+        data-title="BLOCK BLAST"
+        data-img="https://play-lh.googleusercontent.com/R0qgNDYYHbRhw6JFsdEbDMqONplEvJx0m0W9wzYVvY3eNF1c2rfBWYjQxW0sLEzFe1E=w100-h100-rw"
+        data-preview="https://i.pinimg.com/736x/a4/76/de/a476dead47f432001050d0bccd61c164.jpg"
+        data-desc="Block Blast is a free and popular block puzzle game, your best choice for fun and casual challenge!"
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
+      >
+        <img class="game-img" src="https://play-lh.googleusercontent.com/R0qgNDYYHbRhw6JFsdEbDMqONplEvJx0m0W9wzYVvY3eNF1c2rfBWYjQxW0sLEzFe1E=w100-h100-rw" alt="BLOCK BLAST">
+        <div class="game-title">BLOCK BLAST</div>
+        <div class="game-desc">Block Blast is a free and popular block puzzle game, your best choice for fun and casual challenge!</div>
+        <button class="download-btn">Download</button>
+      </div>
+      <div class="game-card"
+        data-title="WATCH DOGS 2"
+        data-img="https://i.pinimg.com/736x/4b/75/8f/4b758f0f9f19847e672d6e4ead739531.jpg"
+        data-preview="https://i.pinimg.com/736x/60/11/ee/6011eedfcbfe656415269ffd7e56e780.jpg"
+        data-desc="Watch Dogs 2 is one of, if not the singular best open-world experience of all time. A carefully crafted world with some of the most clever dialogue and..."
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
+      >
+        <img class="game-img" src="https://i.pinimg.com/736x/4b/75/8f/4b758f0f9f19847e672d6e4ead739531.jpg" alt="WATCH DOGS 2">
+        <div class="game-title">WATCH DOGS 2</div>
+        <div class="game-desc">Watch Dogs 2 is one of, if not the singular best open-world experience of all time. A carefully crafted world with some of the most clever dialogue and...</div>
+        <button class="download-btn">Download</button>
+      </div>
+      <div class="game-card"
+        data-title="BRAWL STARS MOD"
+        data-img="https://i.pinimg.com/736x/a0/37/23/a03723616f549fab2fd5f15a30b7a07c.jpg"
+        data-preview="https://i.pinimg.com/736x/89/e0/9d/89e09d4da1114064b5a78c7c14dae6c9.jpg"
+        data-desc="This Brawl Stars mod includes private servers and offline versions of the game with new star powers, skins, and brawlers..."
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
+      >
+        <img class="game-img" src="https://i.pinimg.com/736x/1d/32/e6/1d32e637b5fafaf5b154aaf2f10f6ebf.jpg" alt="BRAWL STARS MOD">
+        <div class="game-title">BRAWL STARS MOD</div>
+        <div class="game-desc">This Brawl Stars mod includes private servers and offline versions of the game with new star powers, skins, and brawlers...</div>
+        <button class="download-btn">Download</button>
+      </div>
+      <div class="game-card"
+        data-title="BASEBALL9 MOD"
+        data-img="https://i.pinimg.com/736x/9f/d8/e0/9fd8e08e24dc17b299aa8e040973535d.jpg"
+        data-preview="https://i.pinimg.com/736x/b6/a1/fc/b6a1fce608cb0c6159ac8666866db527.jpg"
+        data-desc="Explore BASEBALL9 mod, free coins, and everything is free..."
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
+      >
+        <img class="game-img" src="https://i.pinimg.com/736x/9f/d8/e0/9fd8e08e24dc17b299aa8e040973535d.jpg" alt="BASEBALL9 MOD">
+        <div class="game-title">BASEBALL9 MOD</div>
+        <div class="game-desc">Explore BASEBALL9 mod, free coins, and everything is free...</div>
+        <button class="download-btn">Download</button>
+      </div>
+      <div class="game-card"
+        data-title="BEAM.NG DRIVE"
+        data-img="https://i.pinimg.com/736x/6b/89/f6/6b89f6824de2bab8305969deb19ae4e4.jpg"
+        data-preview="https://i.pinimg.com/736x/cb/d0/f5/cbd0f564020eeb252814bc15403828f6.jpg"
+        data-desc="Experience the thrill of the chase (and the inevitable car crash) in this superb soft-body damage simulator..."
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
+      >
+        <img class="game-img" src="https://i.pinimg.com/736x/6b/89/f6/6b89f6824de2bab8305969deb19ae4e4.jpg" alt="BEAMNG DRIVE">
+        <div class="game-title">BEAM.NG DRIVE</div>
+        <div class="game-desc">Experience the thrill of the chase (and the inevitable car crash) in this superb soft-body damage simulator...</div>
+        <button class="download-btn">Download</button>
+      </div>
+      <div class="game-card"
+        data-title="FORZA HORIZON 5 MOD"
+        data-img="https://i.pinimg.com/736x/83/61/7a/83617a2251c061ee3c6a7527c4b2706d.jpg"
+        data-preview="https://i.pinimg.com/736x/c6/77/70/c67770e8909e74297a6f0ce9092e64c1.jpg"
+        data-desc="Forza Horizon 5 is the latest game in the series, and one of the very best..."
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
+      >
+        <img class="game-img" src="https://i.pinimg.com/736x/83/61/7a/83617a2251c061ee3c6a7527c4b2706d.jpg" alt="FORZA HORIZON 5 MOD">
+        <div class="game-title">FH 5 MOD</div>
+        <div class="game-desc">Forza Horizon 5 is the latest game in the series, and one of the very best...</div>
+        <button class="download-btn">Download</button>
+      </div>
+      <div class="game-card"
+        data-title="LIMBO MOD"
+        data-img="https://i.pinimg.com/736x/ee/ab_57/eeab578378a082bc2df579a2c8f4a954.jpg"
+        data-preview="https://i.pinimg.com/736x/45/84/83/45848375f485d8acac0f183d201fd672.jpg"
+        data-desc="Download the latest version of LIMBO Demo for Android and iOS for free"
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
+      >
+        <img class="game-img" src="https://i.pinimg.com/736x/ee/ab_57/eeab578378a082bc2df579a2c8f4a954.jpg" alt="LIMBO MOD">
+        <div class="game-title">LIMBO MOD</div>
+        <div class="game-desc">Download the latest version of LIMBO Demo for Android and iOS for free</div>
+        <button class="download-btn">Download</button>
+      </div>
+      <div class="game-card"
+        data-title="LITTLE NIGHTMARES MOD"
+        data-img="https://i.pinimg.com/736x/68/ad/60/68ad6053fe9d23ea1fd2800d917ca7a7.jpg"
+        data-preview="https://i.pinimg.com/736x/9e/ca/1e/9eca1ecdd707191aad05823889f60a58.jpg"
+        data-desc="Little Nightmares is a puzzle-platform horror adventure game..."
+        data-cpa-android="https://locked4.com/cl/v/99govp"
+        data-cpa-ios="https://locked4.com/cl/v/99govp"
+      >
+        <img class="game-img" src="https://i.pinimg.com/736x/68/ad/60/68ad6053fe9d23ea1fd2800d917ca7a7.jpg" alt="LITTLE NIGHTMARES MOD">
+        <div class="game-title">LITTLE NIGHTMARES MOD</div>
+        <div class="game-desc">Little Nightmares is a puzzle-platform horror adventure game...</div>
+        <button class="download-btn">Download</button>
+      </div>
+    </section>
+  </main>
 
-        <!-- Top Navigation Bar -->
-        <header id="main-header" class="sticky top-0 z-40 bg-white shadow-md px-4 py-3">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <img src="https://placehold.co/30x30/ff4747/ffffff?text=S" alt="Store Logo" class="h-8 w-8 rounded-full">
-                    <h1 class="text-xl font-semibold text-gray-800">The Phone Store</h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button id="search-icon-btn" aria-label="Search" class="text-gray-600 hover:text-red-500">
-                        <i class="fas fa-search text-xl"></i>
-                    </button>
-                    <button aria-label="Notifications" class="text-gray-600 hover:text-red-500 relative">
-                        <i class="fas fa-bell text-xl"></i>
-                        <span class="absolute -top-1 -right-1 block h-2.5 w-2.5 rounded-full bg-red-500 ring-1 ring-white text-xs"></span>
-                    </button>
-                </div>
-            </div>
-        </header>
-        
-        <!-- Product Detail Header (shown on product detail page) -->
-        <header id="product-detail-header" class="sticky top-0 z-40 bg-white shadow-md px-4 py-3 hidden">
-            <div class="flex items-center justify-between">
-                <button id="back-to-home-btn" class="text-gray-600 hover:text-red-500">
-                    <i class="fas fa-arrow-left text-xl"></i>
-                </button>
-                <h1 id="product-detail-title" class="text-lg font-semibold text-gray-800 truncate mx-2">Product Details</h1>
-                <div class="w-8"></div> <!-- Spacer to balance the back button -->
-            </div>
-        </header>
-
-
-        <!-- Page Container -->
-        <div class="page-container flex-grow overflow-y-auto">
-            <!-- Home Page -->
-            <main id="home-page" class="page active p-4">
-                <!-- Categories Section -->
-                <section class="mb-5">
-                    <h2 class="text-base sm:text-lg font-semibold text-gray-700 mb-2">Categories</h2>
-                    <div class="flex space-x-2 sm:space-x-3 overflow-x-auto pb-2">
-                        <button class="aliexpress-active-category">Electronics</button>
-                        <button class="aliexpress-secondary-button">Fashion</button>
-                        <button class="aliexpress-secondary-button">Home & Garden</button>
-                        <button class="aliexpress-secondary-button">Beauty</button>
-                        <button class="aliexpress-secondary-button">Sports</button>
-                        <button class="aliexpress-secondary-button">Toys</button>
-                    </div>
-                </section>
-
-                <!-- Product Sections Data (will be populated by JS) -->
-            </main>
-
-            <!-- Product Detail Page -->
-            <div id="product-detail-page" class="page p-4">
-                <img id="detail-product-image" src="https://placehold.co/600x400/e0e0e0/757575?text=Product" alt="Product Image" class="product-detail-image mb-4">
-                <h2 id="detail-product-name" class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Product Name</h2>
-                <div class="flex items-center justify-between mb-3">
-                    <p id="detail-product-price" class="text-2xl font-bold aliexpress-red-text">$0.00</p>
-                    <div class="flex items-center text-sm text-gray-500">
-                        <i class="fas fa-star text-yellow-400 mr-1"></i>
-                        <span id="detail-product-rating">0.0</span>
-                        <span class="mx-1">|</span>
-                        <span id="detail-product-sold">0</span> sold
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <h3 class="text-md font-semibold text-gray-700 mb-1">Description</h3>
-                    <div id="detail-product-description" class="text-sm text-gray-600 leading-relaxed min-h-[60px]">
-                        <div class="flex justify-center items-center h-full"><div class="loading-spinner"></div></div>
-                    </div>
-                </div>
-
-                <div class="space-y-3 mt-6">
-                    <button class="detail-add-to-cart-btn"><i class="fas fa-cart-plus mr-2"></i>Add to Cart</button>
-                    <button class="detail-buy-now-btn"><i class="fas fa-bolt mr-2"></i>Buy Now</button>
-                </div>
-
-                <!-- Placeholder for more details like specifications, reviews -->
-                <div class="mt-6 pt-4 border-t border-gray-200">
-                    <h3 class="text-md font-semibold text-gray-700 mb-2">Specifications</h3>
-                    <p class="text-sm text-gray-500">Details about materials, dimensions, etc. (Placeholder)</p>
-                </div>
-                 <div class="mt-4 pt-4 border-t border-gray-200">
-                    <h3 class="text-md font-semibold text-gray-700 mb-2">Customer Reviews (120)</h3>
-                    <p class="text-sm text-gray-500">Review snippets and ratings here. (Placeholder)</p>
-                </div>
-            </div>
-
-            <!-- Cart Page -->
-            <div id="cart-page" class="page p-4 flex flex-col items-center justify-center">
-                <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
-                <h2 class="text-2xl font-semibold text-gray-700 mb-2">Your Cart is Empty</h2>
-                <p class="text-gray-500 text-center mb-6">Looks like you haven't added anything to your cart yet.</p>
-                <button class="aliexpress-red-bg aliexpress-red-hover text-white font-semibold py-2 px-6 rounded-md go-home-btn">Start Shopping</button>
-            </div>
-
-            <!-- Profile Page -->
-            <div id="profile-page" class="page p-4">
-                <div class="flex items-center space-x-4 mb-6 pb-6 border-b border-gray-200">
-                    <img src="https://placehold.co/80x80/ff4747/ffffff?text=U" alt="User Avatar" class="w-20 h-20 rounded-full">
-                    <div>
-                        <h2 class="text-xl font-semibold text-gray-800">User Name</h2>
-                        <p class="text-sm text-gray-500">user.email@example.com</p>
-                    </div>
-                </div>
-                <div class="space-y-3">
-                    <a href="#" class="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors">
-                        <span class="text-gray-700"><i class="fas fa-box w-6 mr-2 aliexpress-red-text"></i>My Orders</span>
-                        <i class="fas fa-chevron-right text-gray-400"></i>
-                    </a>
-                    <a href="#" class="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors">
-                        <span class="text-gray-700"><i class="fas fa-map-marker-alt w-6 mr-2 aliexpress-red-text"></i>Shipping Addresses</span>
-                        <i class="fas fa-chevron-right text-gray-400"></i>
-                    </a>
-                    <a href="#" class="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors">
-                        <span class="text-gray-700"><i class="fas fa-cog w-6 mr-2 aliexpress-red-text"></i>Settings</span>
-                        <i class="fas fa-chevron-right text-gray-400"></i>
-                    </a>
-                     <a href="#" class="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors">
-                        <span class="text-gray-700"><i class="fas fa-sign-out-alt w-6 mr-2 aliexpress-red-text"></i>Logout</span>
-                        <i class="fas fa-chevron-right text-gray-400"></i>
-                    </a>
-                </div>
-            </div>
+  <div class="modal-overlay" id="gameModal">
+    <div class="modal-card">
+      <button class="modal-close" id="closeModal">×</button>
+      <img id="modalPreviewImg" class="modal-preview-img" src="#" alt="Game Preview">
+      <div class="modal-header-row">
+        <img id="modalGameImg" class="modal-game-img" src="#" alt="Game Icon">
+        <div>
+          <h2 id="modalGameTitle"></h2>
+          <p>Play now on mobile</p>
         </div>
-
-        <!-- Bottom Navigation Bar -->
-        <nav class="bottom-nav sticky bottom-0 bg-white border-t border-gray-200 h-16 flex justify-around items-stretch z-30">
-            <button data-page="home-page" class="bottom-nav-item active-nav">
-                <i class="fas fa-home"></i>
-                <span class="text-xs">Home</span>
-            </button>
-            <button data-page="cart-page" class="bottom-nav-item">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="text-xs">Cart</span>
-            </button>
-            <button data-page="profile-page" class="bottom-nav-item">
-                <i class="fas fa-user"></i>
-                <span class="text-xs">Profile</span>
-            </button>
-        </nav>
+      </div>
+      <div class="modal-counters">
+        <div><span>+1M</span><small>Downloads</small></div>
+        <div><span>1.2GB</span><small>Size</small></div>
+        <div><span>4.8★</span><small>120k Reviews</small></div>
+      </div>
+      <div class="modal-download-btns">
+        <a id="modalAndroidBtn" class="android" href="#" target="_blank">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/android.svg" alt="Android">
+          Download for Android
+        </a>
+        <a id="modaliOSBtn" class="ios" href="#" target="_blank">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/apple.svg" alt="iOS">
+          Download for iOS
+        </a>
+      </div>
+      <div class="modal-about">
+        <strong>About This Game</strong>
+        <span id="modalDesc"></span>
+        <button class="read-more-btn" id="modalReadMoreBtn">Read more</button>
+      </div>
     </div>
+  </div>
 
-    <!-- Modal for Gemini Recommendations -->
-    <div id="gemini-reco-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="flex justify-between items-center mb-4">
-                <h3 id="gemini-reco-modal-title" class="text-lg font-semibold text-gray-800">More Suggestions</h3>
-                <button id="close-gemini-reco-modal-btn" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            <div id="gemini-reco-modal-body" class="text-sm text-gray-700 leading-relaxed">
-                <div class="flex justify-center items-center h-20"><div class="loading-spinner"></div></div>
-            </div>
-            <div class="mt-6 text-right">
-                <button id="gemini-reco-modal-ok-btn" class="aliexpress-red-bg aliexpress-red-hover px-4 py-2 rounded-md transition-colors">OK</button>
-            </div>
-        </div>
+  <div id="loaderOverlay" class="loader-overlay">
+    <div class="loader-card">
+      <div class="loader-logo">uploading...</div>
+      <div class="loader-progress-bar">
+        <div class="loader-bar-fill" id="loaderBarFill"></div>
+      </div>
+      <div class="loader-stats">
+        <span id="loaderPercent">0%</span>
+      </div>
+      <div class="loader-verify" id="loaderVerify">
+        <p>To unlock your download, complete a quick verification:</p>
+        <a id="loaderCPA" href="#" target="_blank" class="loader-cpa-btn">complete</a>
+      </div>
     </div>
+  </div>
 
-    <!-- Search Overlay -->
-    <div id="search-overlay">
-        <div id="search-overlay-content" class="w-full max-w-lg">
-            <div class="flex items-center border-b border-gray-300 pb-2 mb-4">
-                <input type="text" id="search-input" placeholder="Search products, brands..." class="flex-grow appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none">
-                <button id="execute-search-btn" class="aliexpress-red-bg aliexpress-red-hover text-white text-sm font-semibold py-2 px-4 rounded-md">Search</button>
-            </div>
-            <div id="search-results-container" class="text-sm text-gray-600">
-                <p>Start typing to see results or popular searches.</p>
-                <!-- Search results will appear here -->
-            </div>
-            <button id="close-search-overlay-btn" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
-        </div>
-    </div>
-
-
+  <footer id="mainFooter">
+    B2PGAMES © 2021 All rights reserved.
+  </footer>
 <script>
-    // --- Page Navigation ---
-    const pages = document.querySelectorAll('.page');
-    const navButtons = document.querySelectorAll('.bottom-nav-item');
-    const mainHeader = document.getElementById('main-header');
-    const productDetailHeader = document.getElementById('product-detail-header');
-    const productDetailTitle = document.getElementById('product-detail-title');
-    const homePage = document.getElementById('home-page'); // Reference to home page main content
+    // HEADER & FOOTER: Show/hide on scroll
+    let lastScroll = window.scrollY;
+    const header = document.getElementById('mainHeader');
+    const footer = document.getElementById('mainFooter');
 
-    function navigateToPage(pageId, productData = null) {
-        pages.forEach(page => page.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-
-        navButtons.forEach(btn => {
-            btn.classList.toggle('active-nav', btn.dataset.page === pageId);
-        });
-
-        if (pageId === 'product-detail-page' && productData) {
-            mainHeader.classList.add('hidden');
-            productDetailHeader.classList.remove('hidden');
-            populateProductDetailPage(productData);
-        } else {
-            mainHeader.classList.remove('hidden');
-            productDetailHeader.classList.add('hidden');
-        }
-        // Scroll to top of the page container
-        document.querySelector('.page-container').scrollTop = 0;
-    }
-
-    navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            navigateToPage(button.dataset.page);
-        });
-    });
-    
-    document.querySelectorAll('.go-home-btn').forEach(button => {
-        button.addEventListener('click', () => navigateToPage('home-page'));
+    window.addEventListener('scroll', function() {
+      const currentScroll = window.scrollY;
+      if (currentScroll > lastScroll && currentScroll > (header.offsetHeight || 60) ) { 
+        header.classList.add('hide-header');
+      } else {
+        header.classList.remove('hide-header');
+      }
+      if (currentScroll < lastScroll && currentScroll > 60) {
+        footer.classList.remove('hide-footer');
+      } else {
+        footer.classList.add('hide-footer');
+      }
+      lastScroll = currentScroll;
     });
 
-    document.getElementById('back-to-home-btn').addEventListener('click', () => {
-        navigateToPage('home-page');
-    });
-
-    // --- Search Overlay ---
-    const searchIconBtn = document.getElementById('search-icon-btn');
-    const searchOverlay = document.getElementById('search-overlay');
-    const closeSearchOverlayBtn = document.getElementById('close-search-overlay-btn');
-    const searchInput = document.getElementById('search-input');
-
-    searchIconBtn.addEventListener('click', () => {
-        searchOverlay.classList.add('active', 'flex'); // Use flex to enable alignment
-        searchOverlay.classList.remove('hidden');
-        setTimeout(() => { // Delay for transition
-            searchOverlay.querySelector('#search-overlay-content').classList.add('scale-100', 'opacity-100');
-            searchInput.focus();
-        }, 50);
-    });
-
-    function closeSearch() {
-        searchOverlay.querySelector('#search-overlay-content').classList.remove('scale-100', 'opacity-100');
-        setTimeout(() => {
-            searchOverlay.classList.remove('active', 'flex');
-            searchOverlay.classList.add('hidden');
-        }, 300);
-    }
-    closeSearchOverlayBtn.addEventListener('click', closeSearch);
-    searchOverlay.addEventListener('click', (event) => { // Close on backdrop click
-        if (event.target === searchOverlay) {
-            closeSearch();
-        }
-    });
-     document.getElementById('execute-search-btn').addEventListener('click', () => {
-        const query = searchInput.value;
-        if(query.trim() !== "") {
-            // Placeholder for actual search logic
-            document.getElementById('search-results-container').innerHTML = `<p>Searching for "<strong>${query}</strong>"... (Search results would appear here)</p>`;
-        }
-    });
-
-
-    // --- Product Data & Sections ---
-    const productSectionsData = [
-        {
-            id: 'products-section-main',
-            title: 'Popular Products',
-            products: [
-                { id: 'p1', name: 'Smartphone Pro X', price: '$599', rating: '4.5', sold: '454', image: 'https://placehold.co/300x200/e2e8f0/94a3b8?text=Phone+X' },
-                { id: 'p2', name: 'Wireless Headphones Beats', price: '$129', rating: '4.8', sold: '1020', image: 'https://placehold.co/300x200/dbeafe/60a5fa?text=Headphones' },
-                { id: 'p3', name: 'Smartwatch Series 8', price: '$249', rating: '4.3', sold: '780', image: 'https://placehold.co/300x200/fee2e2/f87171?text=Watch+8' },
-                { id: 'p4', name: 'Portable Speaker JBL', price: '$79', rating: '4.6', sold: '912', image: 'https://placehold.co/300x200/dcfce7/4ade80?text=Speaker' },
-                { id: 'p5', name: 'Tablet Pro 11 inch', price: '$320', rating: '4.7', sold: '650', image: 'https://placehold.co/300x200/e0e7ff/a5b4fc?text=Tablet+Pro' },
-                { id: 'p6', name: 'Gaming Mouse RGB', price: '$45', rating: '4.9', sold: '1200', image: 'https://placehold.co/300x200/f3e8ff/c084fc?text=GamingMouse' }
-            ]
-        },
-        {
-            id: 'recommended-products-section',
-            title: 'Recommended for You',
-            products: [
-                { id: 'r1', name: 'Noise Cancelling Earbuds Pro', price: '$159', rating: '4.8', sold: '800', image: 'https://placehold.co/300x200/f0fdfa/2dd4bf?text=Earbuds+Pro' },
-                { id: 'r2', name: 'Portable SSD 1TB Extreme', price: '$99', rating: '4.7', sold: '550', image: 'https://placehold.co/300x200/fefce8/eab308?text=SSD+1TB' },
-                { id: 'r3', name: 'Wireless Ergonomic Mouse', price: '$35', rating: '4.5', sold: '1200', image: 'https://placehold.co/300x200/faf5ff/a855f7?text=ErgoMouse' },
-                { id: 'r4', name: '4K Webcam with Ring Light', price: '$65', rating: '4.6', sold: '350', image: 'https://placehold.co/300x200/fff7ed/fb923c?text=Webcam+4K' },
-                { id: 'r5', name: 'Mechanical Keyboard TKL', price: '$89', rating: '4.8', sold: '720', image: 'https://placehold.co/300x200/fef2f2/f87171?text=Keyboard' },
-                { id: 'r6', name: 'Smart LED Light Strip 5m', price: '$25', rating: '4.4', sold: '1500', image: 'https://placehold.co/300x200/ecfdf5/34d399?text=LED+Strip' }
-            ]
-        },
-        {
-            id: 'hot-deals-section',
-            title: 'Hot Deals 🔥',
-            products: [
-                { id: 'hd1', name: 'Ultra HD Smart TV 55"', price: '$399', rating: '4.7', sold: '250', image: 'https://placehold.co/300x200/fef9c3/facc15?text=Smart+TV' },
-                { id: 'hd2', name: 'Robot Vacuum Cleaner X1', price: '$199', rating: '4.6', sold: '480', image: 'https://placehold.co/300x200/ffedd5/fb923c?text=RobotVacuum' },
-                { id: 'hd3', name: 'Air Fryer XL 5.5L', price: '$75', rating: '4.8', sold: '1100', image: 'https://placehold.co/300x200/ecfdf5/34d399?text=AirFryer' },
-                { id: 'hd4', name: 'Electric Scooter Pro', price: '$299', rating: '4.5', sold: '180', image: 'https://placehold.co/300x200/eff6ff/60a5fa?text=Scooter' },
-                { id: 'hd5', name: 'Fitness Tracker Band 7', price: '$39', rating: '4.7', sold: '2200', image: 'https://placehold.co/300x200/f0f9ff/38bdf8?text=FitnessBand' },
-                { id: 'hd6', name: 'Coffee Maker with Grinder', price: '$120', rating: '4.6', sold: '310', image: 'https://placehold.co/300x200/fdf4ff/e879f9?text=CoffeeMaker' }
-            ]
-        },
-        {
-            id: 'new-arrivals-section',
-            title: 'New Arrivals ✨',
-            products: [
-                { id: 'na1', name: 'Drone Mini Foldable 4K', price: '$189', rating: '4.5', sold: '90', image: 'https://placehold.co/300x200/f5f3ff/8b5cf6?text=Drone+Mini' },
-                { id: 'na2', name: 'Smart Glasses Audio', price: '$149', rating: '4.3', sold: '60', image: 'https://placehold.co/300x200/ecfeff/22d3ee?text=SmartGlasses' },
-                { id: 'na3', name: 'Portable Projector HD', price: '$119', rating: '4.6', sold: '150', image: 'https://placehold.co/300x200/f0fdf4/4ade80?text=Projector' },
-                { id: 'na4', name: 'VR Headset NextGen', price: '$349', rating: '4.7', sold: '110', image: 'https://placehold.co/300x200/fdf2f8/f472b6?text=VR+Headset' },
-                { id: 'na5', name: 'Wireless Charging Stand 3-in-1', price: '$49', rating: '4.8', sold: '950', image: 'https://placehold.co/300x200/fffbeb/f59e0b?text=Charger3in1' },
-                { id: 'na6', name: 'Smart Water Bottle UV', price: '$30', rating: '4.5', sold: '400', image: 'https://placehold.co/300x200/ebf4ff/60a5fa?text=SmartBottle' }
-            ]
-        },
-        {
-            id: 'gadget-zone-section',
-            title: 'Gadget Zone 🚀',
-            products: [
-                { id: 'gz1', name: '3D Printer Ender V3', price: '$220', rating: '4.7', sold: '200', image: 'https://placehold.co/300x200/f1f5f9/64748b?text=3DPrinter' },
-                { id: 'gz2', name: 'Raspberry Pi 5 Kit', price: '$95', rating: '4.9', sold: '600', image: 'https://placehold.co/300x200/fee2e2/ef4444?text=RaspberryPi' },
-                { id: 'gz3', name: 'Soldering Iron Kit Digital', price: '$40', rating: '4.6', sold: '700', image: 'https://placehold.co/300x200/ffedd5/f97316?text=SolderingKit' },
-                { id: 'gz4', name: 'Handheld Retro Game Console', price: '$60', rating: '4.5', sold: '850', image: 'https://placehold.co/300x200/fef9c3/eab308?text=RetroConsole' },
-                { id: 'gz5', name: 'USB Microscope Digital', price: '$30', rating: '4.4', sold: '530', image: 'https://placehold.co/300x200/ecfccb/84cc16?text=Microscope' },
-                { id: 'gz6', name: 'Laser Engraver Mini', price: '$150', rating: '4.3', sold: '120', image: 'https://placehold.co/300x200/dbeafe/3b82f6?text=LaserEngraver' }
-            ]
-        }
-    ];
-
-    function createProductCard(product) {
-        const card = document.createElement('div');
-        card.className = 'product-card'; // Tailwind classes are applied via @apply in <style>
-        card.dataset.productId = product.id; // Store product ID for later use
-
-        card.innerHTML = `
-            <img src="${product.image}" alt="${product.name}" onerror="this.src='https://placehold.co/300x200/e0e0e0/757575?text=Img+Error';">
-            <div class="product-card-content">
-                <h3 class="product-name">${product.name}</h3>
-                <div class="flex items-center justify-between text-xs mt-1 mb-1.5">
-                    <p class="font-bold aliexpress-red-text text-sm sm:text-base">${product.price}</p>
-                    <div class="flex items-center text-gray-400">
-                        <i class="fas fa-star text-yellow-400 text-xs mr-0.5"></i>
-                        <span>${product.rating}</span>
-                    </div>
-                </div>
-                <p class="text-xs text-gray-400 mb-1.5">${product.sold} sold</p>
-                <button class="generate-details-btn mt-auto text-xs aliexpress-red-text hover:text-red-700 self-start pt-1">✨ See more details</button>
-            </div>
-        `;
-        card.addEventListener('click', () => {
-             // Find the full product data from our main data source
-            let fullProductData = null;
-            for (const section of productSectionsData) {
-                fullProductData = section.products.find(p => p.id === product.id);
-                if (fullProductData) break;
-            }
-            if (fullProductData) {
-                navigateToPage('product-detail-page', fullProductData);
-            } else {
-                console.error("Could not find product data for ID:", product.id);
-            }
-        });
-        return card;
-    }
-
-    function populateProductSections() {
-        const homePageMain = document.getElementById('home-page');
-        productSectionsData.forEach(sectionData => {
-            const sectionElement = document.createElement('section');
-            sectionElement.className = 'mb-5'; // Spacing between sections
-            sectionElement.innerHTML = `<h2 class="text-base sm:text-lg font-semibold text-gray-700 mb-2">${sectionData.title}</h2>`;
-            
-            const productListDiv = document.createElement('div');
-            productListDiv.id = sectionData.id;
-            productListDiv.className = 'flex space-x-3 overflow-x-auto pb-3'; // Horizontal scroll
-            
-            sectionData.products.forEach(product => {
-                productListDiv.appendChild(createProductCard(product));
-            });
-            sectionElement.appendChild(productListDiv);
-            homePageMain.appendChild(sectionElement); // Append to home page main content
-        });
-    }
-    
-    // --- Product Detail Page ---
-    const detailProductName = document.getElementById('detail-product-name');
-    const detailProductImage = document.getElementById('detail-product-image');
-    const detailProductPrice = document.getElementById('detail-product-price');
-    const detailProductRating = document.getElementById('detail-product-rating');
-    const detailProductSold = document.getElementById('detail-product-sold');
-    const detailProductDescription = document.getElementById('detail-product-description');
-
-    async function populateProductDetailPage(product) {
-        detailProductName.textContent = product.name;
-        productDetailTitle.textContent = product.name; // Update header title
-        detailProductImage.src = product.image.replace('300x200', '600x400'); // Request larger image
-        detailProductImage.alt = product.name;
-        detailProductPrice.textContent = product.price;
-        detailProductRating.textContent = product.rating;
-        detailProductSold.textContent = product.sold;
-        
-        detailProductDescription.innerHTML = `<div class="flex justify-center items-center h-full"><div class="loading-spinner"></div> <p class="ml-2 text-gray-500">Loading details...</p></div>`;
-
-        const prompt = `Generate an engaging and detailed product description in English for a product named "${product.name}". This product is sold on an e-commerce app. Elaborate on its key features, benefits, and potential use cases for a buyer. Aim for around 100-150 words. Start with a catchy phrase about the product.`;
-        const description = await callGeminiAPI(prompt);
-        detailProductDescription.innerHTML = description.replace(/\n/g, '<br>');
-    }
-
-
-    // --- Gemini API Modal & Calls (Recommendations Modal) ---
-    const geminiRecoModal = document.getElementById('gemini-reco-modal');
-    const closeGeminiRecoModalBtn = document.getElementById('close-gemini-reco-modal-btn');
-    const geminiRecoModalOkBtn = document.getElementById('gemini-reco-modal-ok-btn');
-    const geminiRecoModalTitle = document.getElementById('gemini-reco-modal-title');
-    const geminiRecoModalBody = document.getElementById('gemini-reco-modal-body');
-
-    const apiKey = ""; // Canvas will provide this
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-    function showGeminiRecoModal(title = "More Suggestions", isLoading = true, content = "") {
-        geminiRecoModalTitle.textContent = title;
-        if (isLoading) {
-            geminiRecoModalBody.innerHTML = `<div class="flex justify-center items-center h-20"><div class="loading-spinner"></div></div> <p class="text-center text-gray-500 mt-2">Fetching suggestions...</p>`;
-        } else {
-            geminiRecoModalBody.innerHTML = content.replace(/\n/g, '<br>');
-        }
-        geminiRecoModal.classList.add('active');
-    }
-
-    function hideGeminiRecoModal() {
-        geminiRecoModal.classList.remove('active');
-    }
-
-    closeGeminiRecoModalBtn.addEventListener('click', hideGeminiRecoModal);
-    geminiRecoModalOkBtn.addEventListener('click', hideGeminiRecoModal);
-    geminiRecoModal.addEventListener('click', (event) => {
-        if (event.target === geminiRecoModal) {
-            hideGeminiRecoModal();
-        }
-    });
-
-    async function callGeminiAPI(prompt) {
-        const payload = {
-            contents: [{ role: "user", parts: [{ text: prompt }] }]
+    // READ MORE for card descriptions
+    document.querySelectorAll('.game-card').forEach(card => {
+      const descEl = card.querySelector('.game-desc');
+      const fullText = descEl.textContent.trim();
+      if (fullText.length > 50) { 
+        descEl.textContent = fullText.slice(0, 47) + '...';
+        const moreBtn = document.createElement('button');
+        moreBtn.textContent = 'Read more';
+        moreBtn.className = 'readmore-link';
+        let expanded = false;
+        moreBtn.onclick = (e) => {
+          e.stopPropagation(); 
+          expanded = !expanded;
+          descEl.textContent = expanded ? fullText : fullText.slice(0, 47) + '...';
+          moreBtn.textContent = expanded ? "Read less" : "Read more";
+          descEl.appendChild(moreBtn);
         };
-        try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Gemini API Error:", errorData);
-                throw new Error(`API request failed: ${errorData.error?.message || response.status}`);
-            }
-            const result = await response.json();
-            if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) {
-                return result.candidates[0].content.parts[0].text;
-            } else {
-                console.error("Unexpected API response structure:", result);
-                throw new Error("Could not retrieve valid information from Gemini.");
-            }
-        } catch (error) {
-            console.error("Error calling Gemini API:", error);
-            return `An error occurred: ${error.message}. Please try again.`;
-        }
-    }
-    
-    // This button is no longer on product cards, but the logic is kept for the "Get more recommendations" button
-    // If you add a similar button elsewhere, you can adapt this.
-    // For now, the "See more details" functionality is handled by the card click event.
-
-    const getMoreRecommendationsBtn = document.getElementById('get-more-recommendations-btn'); // Assuming this button still exists
-    if (getMoreRecommendationsBtn) { // Check if the button exists on the current page (e.g., home page)
-        getMoreRecommendationsBtn.addEventListener('click', async () => {
-            // Get some product names from the current view to base recommendations on
-            const productElements = document.querySelectorAll('#home-page .product-name'); // Get from home page
-            let currentProducts = Array.from(productElements)
-                                        .map(el => el.textContent.trim())
-                                        .slice(0, 3); // Take first 3 for prompt brevity
-
-            if (currentProducts.length === 0) { // Fallback if no products found on home page
-                 currentProducts = ["Smartphone", "Wireless Headphones", "Smartwatch"]; // Generic fallback
-            }
-
-            showGeminiRecoModal("Fetching New Suggestions");
-
-            const prompt = `Based on general e-commerce trends for items like "${currentProducts.join('", "')}", suggest 3 more distinct product names that a user might also be interested in. Provide only the product names, each on a new line. For example: Smart Thermostat\nWireless Charger\nVR Headset. Respond in English.`;
-            
-            const recommendationsText = await callGeminiAPI(prompt);
-            
-            let recommendationsHtml = recommendationsText;
-            if (typeof recommendationsText === 'string' && !recommendationsText.startsWith("An error occurred")) {
-                const newRecs = recommendationsText.split('\n').filter(rec => rec.trim() !== '');
-                if (newRecs.length > 0) {
-                    recommendationsHtml = "<strong>Here are some more ideas:</strong><ul class='list-disc list-inside mt-2 space-y-1'>";
-                    newRecs.forEach(rec => {
-                        recommendationsHtml += `<li>${rec.trim()}</li>`;
-                    });
-                    recommendationsHtml += "</ul>";
-                } else {
-                    recommendationsHtml = "Could not find new recommendations at this time. Please try again.";
-                }
-            }
-            
-            showGeminiRecoModal("New Suggestions", false, recommendationsHtml);
-        });
-    }
-
-
-    // --- Initialize App ---
-    document.addEventListener('DOMContentLoaded', () => {
-        populateProductSections(); // Dynamically create product sections and cards
-        navigateToPage('home-page'); // Start on home page
-        console.log("The Phone Store Pro initialized with multiple pages and enhanced features.");
+        descEl.appendChild(moreBtn);
+      }
     });
 
-</script>
+    // MODAL LOGIC
+    const modal = document.getElementById('gameModal');
+    const modalPreviewImg = document.getElementById('modalPreviewImg');
+    const modalGameImg = document.getElementById('modalGameImg');
+    const modalGameTitle = document.getElementById('modalGameTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalDownloadBtnAndroid = document.getElementById('modalAndroidBtn');
+    const modalDownloadBtniOS = document.getElementById('modaliOSBtn');
+    const closeModalBtn = document.getElementById('closeModal');
+    const modalReadMoreBtn = document.getElementById('modalReadMoreBtn');
 
+    function openGameDetailModal(cardElement) {
+        modalPreviewImg.src = cardElement.dataset.preview;
+        modalGameImg.src = cardElement.dataset.img;
+        modalGameTitle.textContent = cardElement.dataset.title;
+        
+        const fullDesc = cardElement.dataset.desc;
+        const shortDesc = fullDesc.slice(0, 80) + (fullDesc.length > 80 ? '...' : '');
+        modalDesc.textContent = shortDesc;
+        
+        modalReadMoreBtn.textContent = "Read more"; 
+        let modalExpanded = false; 
+
+        if (fullDesc.length <= 80) {
+            modalReadMoreBtn.style.display = 'none';
+        } else {
+            modalReadMoreBtn.style.display = 'inline-block';
+        }
+
+        if (modalReadMoreBtn.customClickHandler) {
+            modalReadMoreBtn.removeEventListener('click', modalReadMoreBtn.customClickHandler);
+        }
+        modalReadMoreBtn.customClickHandler = function() { 
+          modalExpanded = !modalExpanded;
+          modalDesc.textContent = modalExpanded ? fullDesc : shortDesc;
+          this.textContent = modalExpanded ? "Read less" : "Read more";
+        };
+        modalReadMoreBtn.addEventListener('click', modalReadMoreBtn.customClickHandler);
+
+        modalDownloadBtnAndroid.href = cardElement.dataset.cpaAndroid;
+        modalDownloadBtniOS.href = cardElement.dataset.cpaIos;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    document.querySelectorAll('.game-card').forEach(card => {
+      card.addEventListener('click', function(event) {
+        if (event.target.classList.contains('readmore-link') || event.target.classList.contains('download-btn')) {
+            return;
+        }
+        openGameDetailModal(card);
+      });
+
+      const downloadButton = card.querySelector('.download-btn');
+      if(downloadButton){
+        downloadButton.onclick = function(e) {
+            e.stopPropagation(); 
+            openGameDetailModal(card); 
+        };
+      }
+    });
+
+    closeModalBtn.onclick = function() {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    };
+    window.onclick = function(e) {
+      if (e.target === modal) {
+        closeModalBtn.onclick();
+      }
+    };
+
+    // LOADER LOGIC
+    const loaderOverlay = document.getElementById('loaderOverlay');
+    const loaderBarFill = document.getElementById('loaderBarFill');
+    const loaderPercentText = document.getElementById('loaderPercent'); 
+    const loaderVerify = document.getElementById('loaderVerify');
+    const loaderCPA = document.getElementById('loaderCPA');
+
+    function triggerLoader(cpaUrl) {
+      if (modal.style.display === 'flex') {
+          modal.style.display = 'none';
+      }
+      document.body.style.overflow = 'hidden';
+      loaderOverlay.style.display = 'flex';
+      if(loaderBarFill) loaderBarFill.style.width = '0%';
+      if(loaderPercentText) loaderPercentText.textContent = "0%";
+      if(loaderVerify) loaderVerify.style.display = 'none';
+      
+      let progress = 0;
+      loaderCPA.href = cpaUrl; 
+      
+      let interval = setInterval(() => {
+        if (progress >= 100) {
+          clearInterval(interval);
+          if(loaderVerify) loaderVerify.style.display = 'block';
+          return;
+        }
+        let add = Math.random() * 8 + 2;
+        progress += add;
+        if (progress > 100) progress = 100;
+        
+        if(loaderBarFill) loaderBarFill.style.width = progress + "%";
+        if(loaderPercentText) loaderPercentText.textContent = Math.floor(progress) + "%";
+      }, 110);
+    }
+
+    modalDownloadBtnAndroid.onclick = function(e) {
+      e.preventDefault(); 
+      triggerLoader(this.href); 
+    };
+    modalDownloadBtniOS.onclick = function(e) {
+      e.preventDefault(); 
+      triggerLoader(this.href); 
+    };
+
+    loaderCPA.onclick = function() { 
+      setTimeout(()=>{
+        loaderOverlay.style.display = 'none';
+        document.body.style.overflow = '';
+      }, 750);
+    };
+    window.addEventListener('click', function(e){
+      if(e.target === loaderOverlay) { 
+        loaderOverlay.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+
+    // DARK MODE TOGGLE SCRIPT
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+    const currentTheme = localStorage.getItem('theme');
+
+    if (currentTheme === 'dark') {
+        body.classList.add('dark-mode');
+    } else {
+        body.classList.remove('dark-mode');
+    }
+
+    darkModeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        let theme = 'light';
+        if (body.classList.contains('dark-mode')) {
+            theme = 'dark';
+        }
+        localStorage.setItem('theme', theme);
+    });
+</script>
 </body>
 </html>
