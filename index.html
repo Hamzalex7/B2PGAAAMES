@@ -127,31 +127,8 @@
         padding: 8px 15px; /* Adjusted padding for mobile */
       }
       .main-header h1 { font-size: 1.2rem; }
-    }
-    footer {
-      background: #171e28; 
-      color: var(--header-footer-text);
-      text-align: center;
-      padding: 18px 0 11px 0;
-      border-top-left-radius: 38px;
-      border-top-right-radius: 38px;
-      box-shadow: 0 -4px 24px 0 #212c4033;
-      font-size: 0.96rem;
-      animation: fadeInUp 1.3s;
-      position: fixed;
-      left: 0;
-      bottom: 0;
-      width: 100vw;
-      z-index: 10;
-      transition: bottom 0.4s;
-    }
-    body.dark-mode footer {
-        background: #1f1f1f;
-        color: var(--header-footer-text);
-        box-shadow: 0 -4px 24px 0 rgba(0,0,0,0.2);
-    }
     footer.hide-footer {
-      bottom: -80px;
+      display: none !important;
     }
     .games-grid {
       display: grid;
