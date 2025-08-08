@@ -260,6 +260,7 @@
     .download-btn:focus {
       background: linear-gradient(90deg, #23272b 0%, #14181a 100%);
       filter: brightness(1.09);
+       box-shadow: 0 4px 18px 0 #191e2444;
       box-shadow: 0 4px 18px 0 #191e2444;
     }
     .modal-overlay {
@@ -605,7 +606,7 @@
         opacity: 1;
         transform: scale(1) rotate(0deg);
     }
-   
+
     @media (max-width:700px) { 
       #darkModeToggle { 
         margin-left: 10px; /* Adjusted margin for mobile */
@@ -618,7 +619,7 @@
       }
        .icon-moon { box-shadow: inset -4px 1px 0 0 var(--icon-moon-color); }
     }
-   
+
     @keyframes fadeInUp {
       0% { opacity: 0; transform: translateY(50px);}
       100% {opacity:1; transform: none;}
@@ -876,11 +877,11 @@
         modalPreviewImg.src = cardElement.dataset.preview;
         modalGameImg.src = cardElement.dataset.img;
         modalGameTitle.textContent = cardElement.dataset.title;
-        
+
         const fullDesc = cardElement.dataset.desc;
         const shortDesc = fullDesc.slice(0, 80) + (fullDesc.length > 80 ? '...' : '');
         modalDesc.textContent = shortDesc;
-        
+
         modalReadMoreBtn.textContent = "Read more"; 
         let modalExpanded = false; 
 
@@ -894,4 +895,3 @@
             modalReadMoreBtn.removeEventListener('click', modalReadMoreBtn.customClickHandler);
         }
         modalReadMoreBtn.customClickHandler = function() { 
-[...]
