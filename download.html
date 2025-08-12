@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Download Now | TalkNJoy</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', Arial, sans-serif;
+      background: #f9f9f9;
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .download-container {
+      max-width: 440px;
+      width: 100%;
+      margin: 50px auto 0 auto;
+      padding: 32px 20px 18px 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.09);
+      border-radius: 13px;
+      background: #fff;
+      text-align: center;
+    }
+    .download-title {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #0d99ff;
+      font-weight: 700;
+    }
+    .download-btn {
+      display: block;
+      background: #0d99ff;
+      color: #fff;
+      border: none;
+      border-radius: 33px;
+      padding: 18px 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      width: 100%;
+      margin: 26px 0 17px 0;
+      cursor: pointer;
+      box-shadow: 0 8px 22px rgba(13,153,255,0.13);
+      transition: background 0.22s;
+      text-decoration: none;
+    }
+    .download-btn:hover, .download-btn:focus {
+      background: #076ed9;
+    }
+    .reviews-title {
+      margin-bottom: 14px;
+      margin-top: 22px;
+      color: #0d99ff;
+      font-size: 1.15rem;
+      font-weight: 700;
+      text-align: left;
+    }
+    .reviews {
+      margin-top: 0;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+    .review {
+      background: #f3fbff;
+      border-radius: 8px;
+      padding: 11px 14px 7px 12px;
+      box-shadow: 0 2px 7px rgba(13,153,255,0.07);
+      font-size: 0.99rem;
+      margin-bottom: 13px;
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+    }
+    .review img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid #0d99ff33;
+    }
+    .review-content {
+      flex: 1;
+    }
+    .review-user {
+      font-weight: 700;
+      color: #0d99ff;
+      font-size: 0.96rem;
+      margin-bottom: 2px;
+      margin-top: 1px;
+      display: block;
+    }
+    .footer-v4 {
+      margin-top: 32px;
+      font-size: 0.85rem;
+      color: #aaa;
+      letter-spacing: 0.2px;
+      text-align: center;
+    }
+    @media (max-width: 500px) {
+      .download-container { padding: 15px 2vw 12px 2vw; }
+      .download-title { font-size: 1.3rem; }
+      .review { padding: 7px 7px 4px 7px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="download-container">
+    <div class="download-title">Your Download is Ready!</div>
+    <p style="color:#444;font-size:1.04rem;">
+      Thank you for signing up. Click the button below to get started.
+    </p>
+    <!-- PLACE YOUR CPA LINK BELOW by replacing # -->
+    <a href="#" class="download-btn" target="_blank" id="downloadNowBtn">Download Now</a>
+    <div class="reviews-title">What our users say</div>
+    <div class="reviews">
+      <div class="review">
+        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Sophie profile photo" />
+        <div class="review-content">
+          <span class="review-user">Sophie, France</span>
+          <span>I love how easy and fun it is to learn with TalkNJoy! The lessons fit perfectly into my daily routine.</span>
+        </div>
+      </div>
+      <div class="review">
+        <img src="https://randomuser.me/api/portraits/men/33.jpg" alt="Luis profile photo" />
+        <div class="review-content">
+          <span class="review-user">Luis, Mexico</span>
+          <span>The offline mode is a lifesaver! I can practice anywhere, even on the subway. Highly recommended.</span>
+        </div>
+      </div>
+      <div class="review">
+        <img src="https://randomuser.me/api/portraits/men/46.jpg" alt="Youssef profile photo" />
+        <div class="review-content">
+          <span class="review-user">Youssef, Morocco</span>
+          <span>Great app, very smooth interface. I improved my English in just a few weeks!</span>
+        </div>
+      </div>
+    </div>
+    <footer class="footer-v4">
+      © 2025 TalkNJoy. All rights reserved.
+    </footer>
+  </div>
+  <script>
+    // OPTIONAL: get email from URL if you want to display it or use it
+    // const email = new URLSearchParams(window.location.search).get('email');
+    // document.getElementById('showEmail').textContent = email;
+  </script>
+</body>
+</html>
