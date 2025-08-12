@@ -348,8 +348,12 @@
       setTimeout(() => {
         this.querySelector('.modal-btn').style.display = 'none';
         modalSuccess.style.display = 'block';
+        
       }, 1400);
-      setTimeout(closeModal, 3300);
+      // هذا هو الكود ديال redirect من بعد نجاح التسجيل
+setTimeout(() => {
+  window.location.href = "download.html?email=" + encodeURIComponent(emailInput.value);
+}, 2200);
     });
     // ESC closes modal
     window.addEventListener('keydown', function(e){
