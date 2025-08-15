@@ -18,7 +18,6 @@
       background-repeat: no-repeat;
       background-attachment: fixed;
     }
-
     header {
       width: 100%;
       height: 70px;
@@ -32,7 +31,6 @@
       border-bottom: 1px solid #222;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
-
     .logo {
       position: absolute;
       left: 50%;
@@ -59,12 +57,10 @@
       display: block;
       width: 30px;
       height: 4px;
-      background: #fff;
+      background: #000;
       border-radius: 2px;
       transition: 0.3s;
     }
-
-    /* Card Style */
     .card {
       width: 85vw !important;
       max-width: 450px !important;
@@ -78,9 +74,28 @@
       color: #fff;
       position: relative;
       text-align: center;
+      overflow: hidden;
     }
-
-    /* Brawl Stars Style Text */
+    .card.card-bonus {
+      background-image: none !important;
+      position: relative;
+    }
+    .card-bonus-bg {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      border-radius: 25px;
+      background-image: url('https://i.pinimg.com/1200x/10/b0/e5/10b0e5bb888a28809622803ff472b990.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.65;
+    }
+    .card.card-bonus > *:not(.card-bonus-bg) {
+      position: relative;
+      z-index: 1;
+    }
     .brawl-title,
     .brawl-desc,
     .brawl-btn,
@@ -93,7 +108,6 @@
       text-align: center;
       letter-spacing: 1px;
     }
-
     .brawl-title {
       font-size: 48px;
       line-height: 1.1;
@@ -110,7 +124,7 @@
     .brawl-btn {
       display: inline-block;
       padding: 14px 36px;
-      background: linear-gradient(90deg, #44 0%, #000 100%);
+      background: linear-gradient(90deg, #444 0%, #000 100%);
       border: none;
       border-radius: 25px;
       font-size: 1.3rem;
@@ -129,13 +143,10 @@
       margin: 28px auto 0 auto;
       width: 120px;
       height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
+      object-fit: contain;
       background: none;
       border: none;
     }
-
-    /* Modal Layout */
     .modal-bg {
       position: fixed;
       top: 0; left: 0;
@@ -147,7 +158,7 @@
       z-index: 999;
     }
     .modal-box {
-      background: url('https://i.pinimg.com/1200x/10/b0/e5/10b0e5bb888a28809622803ff472b990.jpg');
+      background: url('https://i.pinimg.com/1200x/d0/1b/40/d01b40d4b19e038840d05f95fd6252b0.jpg');
       background-size: cover;
       background-position: center;
       border-radius: 18px;
@@ -221,9 +232,116 @@
       line-height: 29px;
       font-family: 'Lilita One', sans-serif;
     }
-
+    /* Overlay Menu Styles */
+    .overlay-menu {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(22, 19, 34, 0.97);
+      z-index: 2000;
+      animation: overlayFade 0.35s;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    @keyframes overlayFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .overlay-content {
+      flex: 1 1 auto;
+      padding: 38px 15px 10px 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .overlay-header {
+      font-family: 'Lilita One', sans-serif;
+      font-size: 2.2rem;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      color: #FFD700;
+      -webkit-text-stroke: 2px #222;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-top: 25px;
+    }
+    .overlay-list {
+      width: 100%;
+      max-width: 340px;
+      margin: 0 auto 28px auto;
+      padding: 0;
+      text-align: left;
+      list-style: none;
+    }
+    .overlay-list li {
+      font-family: 'Lilita One', sans-serif;
+      font-size: 1.18rem;
+      color: #fff;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+      text-align: left;
+      padding-left: 0;
+      position: relative;
+    }
+    /* النجوم تحيدات من هنا */
+    /* .overlay-list li:before {
+      content: "";
+    } */
+    .overlay-close {
+      position: absolute;
+      top: 11px;
+      right: 22px;
+      background: #961100;
+      color: #222;
+      font-size: 2.3rem;
+      border-radius: 50%;
+      border: none;
+      width: 38px;
+      height: 36px;
+      cursor: pointer;
+      z-index: 2100;
+      font-family: 'Lilita One', sans-serif;
+      box-shadow: 0 2px 10px #0007;
+      transition: background 0.2s;
+    }
+    .overlay-footer {
+      width: 100%;
+      background: none;
+      text-align: center;
+      padding: 0 0 25px 0;
+      color: #fff;
+      font-family: 'Lilita One', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      opacity: 0.85;
+    }
+    .overlay-footer span {
+      color: #FFD700;
+      font-size: 1.1rem;
+    }
+    /* Footer in body */
+    .main-footer {
+      width: 100vw;
+      text-align: center;
+      padding: 20px 0 11px 0;
+      color: #fff;
+      font-family: 'Lilita One', sans-serif;
+      font-size: 1.08rem;
+      letter-spacing: 2px;
+      background: rgba(22, 19, 34, 0.83);
+      border-top: 2px solid #FFD700;
+      margin-top: 40px;
+      opacity: 0.93;
+      position: relative;
+      z-index: 10;
+    }
+    .main-footer span {
+      color: #FFD700;
+    }
     @media (max-width: 500px) {
-      .card {
+      .card, .card.card-bonus {
         width: 94vw;
         max-width: 98vw;
         padding: 9vw 2vw 12vw 2vw;
@@ -236,8 +354,8 @@
         font-size: 1rem;
       }
       .profile-img {
-        width: 90px;
-        height: 90px;
+        width: 80px;
+        height: 85px;
       }
       .modal-box {
         max-width: 94vw;
@@ -251,6 +369,16 @@
         font-size: 1rem;
         -webkit-text-stroke: 1px #000000;
       }
+      .overlay-header {
+        font-size: 1.35rem;
+        margin-top: 11vw;
+      }
+      .overlay-list li {
+        font-size: 1.06rem;
+      }
+      .overlay-footer, .main-footer {
+        font-size: 0.97rem;
+      }
     }
   </style>
 </head>
@@ -259,22 +387,51 @@
     <div class="logo">
       <img src="https://store.supercell.com/_next/static/media/logo.38da3d7b.png" alt="Logo">
     </div>
-    <div class="menu-icon">
+    <div class="menu-icon" id="menuIcon">
       <span></span>
       <span></span>
       <span></span>
     </div>
   </header>
   
-  <!-- Card Section -->
+  <!-- Card 1 -->
   <div class="card">
     <h1 class="brawl-title">LOG IN TO<br>VIEW OFFERS</h1>
-    <div class="brawl-desc">
-      
-    </div>
+    <div class="brawl-desc"></div>
     <button class="brawl-btn" id="loginBtn">LOG IN</button>
-    <!-- Profile Image BELOW login button - change src to your link -->
     <img class="profile-img" src="https://store.supercell.com/_next/static/media/bs_store_preview_support_figure.bead25d2.png" alt="Profile Image">
+  </div>
+
+  <!-- Card 2 (Bonus) -->
+  <div class="card card-bonus">
+    <div class="card-bonus-bg"></div>
+    <h1 class="brawl-title">BONUS REWARDS</h1>
+    <div class="brawl-desc">
+      Collect your extra rewards now! <br>Limited time only.
+    </div>
+    <button class="brawl-btn" id="bonusBtn">CLAIM BONUS</button>
+    <img class="profile-img" src="https://game-assets.store.supercell.com/brawlstars/b7ca1d6d-f770-4714-8dfc-e3a33c339769.png" alt="Profile Image">
+  </div>
+
+  <!-- Overlay Menu -->
+  <div class="overlay-menu" id="overlayMenu">
+    <button class="overlay-close" id="overlayClose">&times;</button>
+    <div class="overlay-content">
+      <div class="overlay-header">Support & More</div>
+      <ul class="overlay-list">
+        <li>Contact Support</li>
+        <li>FAQ & Help Center</li>
+        <li>Game Updates</li>
+        <li>Events & Challenges</li>
+        <li>Profile Settings</li>
+        <li>My Rewards</li>
+        <li>Invite Friends</li>
+      </ul>
+    </div>
+    <div class="overlay-footer">
+      <span>Brawl Stars 2025</span> &nbsp;|&nbsp; All rights reserved.<br>
+      <span></span>
+    </div>
   </div>
 
   <!-- Modal Layout -->
@@ -286,28 +443,76 @@
       <button class="modal-submit" id="modalSubmit">Submit</button>
     </div>
   </div>
+  <!-- Modal Layout for Card 2 -->
+  <div class="modal-bg" id="modalBg2" style="display:none;">
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose2">&times;</button>
+      <div class="modal-title">Claim your Bonus</div>
+      <input type="text" class="modal-input" id="bonusInput" placeholder="Enter your Player ID">
+      <button class="modal-submit" id="modalSubmit2">Submit</button>
+    </div>
+  </div>
+
+  <!-- Main Footer -->
+  <footer class="main-footer">
+    <span>Brawl Stars 2025</span> | All rights reserved. &nbsp;&nbsp;&nbsp;&nbsp; <span></span>
+  </footer>
 
   <script>
-    // Show modal
+    // Show menu overlay
+    document.getElementById('menuIcon').onclick = function() {
+      document.getElementById('overlayMenu').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    // Close overlay menu
+    document.getElementById('overlayClose').onclick = function() {
+      document.getElementById('overlayMenu').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    document.getElementById('overlayMenu').onclick = function(e) {
+      if(e.target === this) {
+        document.getElementById('overlayMenu').style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+    // Show modal 1
     document.getElementById('loginBtn').onclick = function() {
       document.getElementById('modalBg').style.display = 'flex';
       document.getElementById('loginInput').value = '';
     }
-    // Close modal
+    // Close modal 1
     document.getElementById('modalClose').onclick = function() {
       document.getElementById('modalBg').style.display = 'none';
     }
-    // When clicking outside modal, close
     document.getElementById('modalBg').onclick = function(e) {
       if(e.target === this) {
         document.getElementById('modalBg').style.display = 'none';
       }
     }
-    // Submit button
+    // Submit button modal 1
     document.getElementById('modalSubmit').onclick = function() {
-      // Your CPA link here!
       var cpaLink = "https://cpa-link.com/offer"; // Replace with your CPA link
       window.open(cpaLink, "_blank");
+    }
+
+    // Show modal 2
+    document.getElementById('bonusBtn').onclick = function() {
+      document.getElementById('modalBg2').style.display = 'flex';
+      document.getElementById('bonusInput').value = '';
+    }
+    // Close modal 2
+    document.getElementById('modalClose2').onclick = function() {
+      document.getElementById('modalBg2').style.display = 'none';
+    }
+    document.getElementById('modalBg2').onclick = function(e) {
+      if(e.target === this) {
+        document.getElementById('modalBg2').style.display = 'none';
+      }
+    }
+    // Submit button modal 2
+    document.getElementById('modalSubmit2').onclick = function() {
+      var cpaLink2 = "https://cpa-link.com/bonus"; // Replace with your CPA link for bonus
+      window.open(cpaLink2, "_blank");
     }
   </script>
 </body>
