@@ -7,7 +7,6 @@
   <!-- Lilita One font -->
   <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
   <style>
-    /* Site Fade-in Animation */
     body {
       margin: 0;
       padding: 0;
@@ -18,12 +17,6 @@
       background-position: center;
       background-repeat: no-repeat;
       background-attachment: fixed;
-      opacity: 0;
-      animation: siteFadeIn 1.1s ease forwards;
-    }
-    @keyframes siteFadeIn {
-      from { opacity: 0; filter: blur(8px);}
-      to { opacity: 1; filter: blur(0);}
     }
     header {
       width: 100%;
@@ -37,12 +30,6 @@
       background-position: center;
       border-bottom: 1px solid #222;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      opacity: 0;
-      animation: fadeInHeader 0.8s 0.4s ease forwards;
-    }
-    @keyframes fadeInHeader {
-      from { opacity: 0; transform: translateY(-30px);}
-      to { opacity: 1; transform: translateY(0);}
     }
     .logo {
       position: absolute;
@@ -88,18 +75,6 @@
       position: relative;
       text-align: center;
       overflow: hidden;
-      opacity: 0;
-      animation: fadeInCard 1s 0.7s cubic-bezier(.44,1.61,.47,.98) forwards;
-    }
-    /* Fade-in for cards */
-    .card.custom-bg,
-    .card:not(.custom-bg) {
-      opacity: 0;
-      animation: fadeInCard 1s 1s cubic-bezier(.44,1.61,.47,.98) forwards;
-    }
-    @keyframes fadeInCard {
-      from { opacity: 0; transform: translateY(60px);}
-      to { opacity: 1; transform: translateY(0);}
     }
     /* Generic card with custom background and opacity (for bonus and extra cards) */
     .card.custom-bg {
@@ -116,31 +91,10 @@
       background-size: cover;
       background-position: center;
       opacity: 0.65;
-      transition: opacity 0.3s;
     }
     .card.custom-bg > *:not(.card-bg) {
       position: relative;
       z-index: 1;
-    }
-    /* Medal box (modal) opacity less than before */
-    .modal-box {
-      background: url('https://i.pinimg.com/736x/ee/64/c3/ee64c3a6ea8ad4cf185c1a77d1fa2551.jpg');
-      background-size: cover;
-      background-position: center;
-      border-radius: 18px;
-      box-shadow: 0 2px 18px #000c;
-      max-width: 340px;
-      width: 90%;
-      padding: 24px 20px 18px 20px;
-      color: #fff;
-      text-align: center;
-      position: relative;
-      animation: modalShow 0.35s ease;
-      opacity: 0.88 !important; /* LESS opacity */
-    }
-    @keyframes modalShow {
-      from { opacity: 0; transform: translateY(60px);}
-      to { opacity: 0.88; transform: translateY(0);}
     }
     .brawl-title,
     .brawl-desc,
@@ -202,11 +156,24 @@
       align-items: center;
       justify-content: center;
       z-index: 999;
-      animation: fadeInModalBg 0.5s;
     }
-    @keyframes fadeInModalBg {
-      from { opacity: 0;}
-      to { opacity: 1;}
+    .modal-box {
+      background: url('https://i.pinimg.com/736x/ee/64/c3/ee64c3a6ea8ad4cf185c1a77d1fa2551.jpg');
+      background-size: cover;
+      background-position: center;
+      border-radius: 18px;
+      box-shadow: 0 2px 18px #000c;
+      max-width: 340px;
+      width: 90%;
+      padding: 24px 20px 18px 20px;
+      color: #fff;
+      text-align: center;
+      position: relative;
+      animation: modalShow 0.35s ease;
+    }
+    @keyframes modalShow {
+      from { opacity: 0; transform: translateY(60px);}
+      to { opacity: 1; transform: translateY(0);}
     }
     .modal-title {
       font-size: 1.25rem;
