@@ -7,6 +7,7 @@
   <!-- Lilita One font -->
   <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
   <style>
+    /* Site Fade-in Animation */
     body {
       margin: 0;
       padding: 0;
@@ -17,6 +18,12 @@
       background-position: center;
       background-repeat: no-repeat;
       background-attachment: fixed;
+      opacity: 0;
+      animation: siteFadeIn 1.1s ease forwards;
+    }
+    @keyframes siteFadeIn {
+      from { opacity: 0; filter: blur(8px);}
+      to { opacity: 1; filter: blur(0);}
     }
     header {
       width: 100%;
@@ -30,6 +37,12 @@
       background-position: center;
       border-bottom: 1px solid #222;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      opacity: 0;
+      animation: fadeInHeader 0.8s 0.4s ease forwards;
+    }
+    @keyframes fadeInHeader {
+      from { opacity: 0; transform: translateY(-30px);}
+      to { opacity: 1; transform: translateY(0);}
     }
     .logo {
       position: absolute;
@@ -75,26 +88,59 @@
       position: relative;
       text-align: center;
       overflow: hidden;
+      opacity: 0;
+      animation: fadeInCard 1s 0.7s cubic-bezier(.44,1.61,.47,.98) forwards;
     }
-    .card.card-bonus {
+    /* Fade-in for cards */
+    .card.custom-bg,
+    .card:not(.custom-bg) {
+      opacity: 0;
+      animation: fadeInCard 1s 1s cubic-bezier(.44,1.61,.47,.98) forwards;
+    }
+    @keyframes fadeInCard {
+      from { opacity: 0; transform: translateY(60px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    /* Generic card with custom background and opacity (for bonus and extra cards) */
+    .card.custom-bg {
       background-image: none !important;
       position: relative;
     }
-    .card-bonus-bg {
+    .card-bg {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       width: 100%;
       height: 100%;
       z-index: 0;
       border-radius: 25px;
-      background-image: url('https://i.pinimg.com/1200x/10/b0/e5/10b0e5bb888a28809622803ff472b990.jpg');
       background-size: cover;
       background-position: center;
       opacity: 0.65;
+      transition: opacity 0.3s;
     }
-    .card.card-bonus > *:not(.card-bonus-bg) {
+    .card.custom-bg > *:not(.card-bg) {
       position: relative;
       z-index: 1;
+    }
+    /* Medal box (modal) opacity less than before */
+    .modal-box {
+      background: url('https://i.pinimg.com/736x/ee/64/c3/ee64c3a6ea8ad4cf185c1a77d1fa2551.jpg');
+      background-size: cover;
+      background-position: center;
+      border-radius: 18px;
+      box-shadow: 0 2px 18px #000c;
+      max-width: 340px;
+      width: 90%;
+      padding: 24px 20px 18px 20px;
+      color: #fff;
+      text-align: center;
+      position: relative;
+      animation: modalShow 0.35s ease;
+      opacity: 0.88 !important; /* LESS opacity */
+    }
+    @keyframes modalShow {
+      from { opacity: 0; transform: translateY(60px);}
+      to { opacity: 0.88; transform: translateY(0);}
     }
     .brawl-title,
     .brawl-desc,
@@ -156,24 +202,11 @@
       align-items: center;
       justify-content: center;
       z-index: 999;
+      animation: fadeInModalBg 0.5s;
     }
-    .modal-box {
-      background: url('https://i.pinimg.com/1200x/d0/1b/40/d01b40d4b19e038840d05f95fd6252b0.jpg');
-      background-size: cover;
-      background-position: center;
-      border-radius: 18px;
-      box-shadow: 0 2px 18px #000c;
-      max-width: 340px;
-      width: 90%;
-      padding: 24px 20px 18px 20px;
-      color: #fff;
-      text-align: center;
-      position: relative;
-      animation: modalShow 0.35s ease;
-    }
-    @keyframes modalShow {
-      from { opacity: 0; transform: translateY(60px);}
-      to { opacity: 1; transform: translateY(0);}
+    @keyframes fadeInModalBg {
+      from { opacity: 0;}
+      to { opacity: 1;}
     }
     .modal-title {
       font-size: 1.25rem;
@@ -285,10 +318,6 @@
       padding-left: 0;
       position: relative;
     }
-    /* النجوم تحيدات من هنا */
-    /* .overlay-list li:before {
-      content: "";
-    } */
     .overlay-close {
       position: absolute;
       top: 11px;
@@ -341,7 +370,7 @@
       color: #FFD700;
     }
     @media (max-width: 500px) {
-      .card, .card.card-bonus {
+      .card, .card.custom-bg {
         width: 94vw;
         max-width: 98vw;
         padding: 9vw 2vw 12vw 2vw;
@@ -354,8 +383,8 @@
         font-size: 1rem;
       }
       .profile-img {
-        width: 80px;
-        height: 85px;
+        width: 105px !important;
+        height: 100px !important;
       }
       .modal-box {
         max-width: 94vw;
@@ -399,18 +428,40 @@
     <h1 class="brawl-title">LOG IN TO<br>VIEW OFFERS</h1>
     <div class="brawl-desc"></div>
     <button class="brawl-btn" id="loginBtn">LOG IN</button>
-    <img class="profile-img" src="https://store.supercell.com/_next/static/media/bs_store_preview_support_figure.bead25d2.png" alt="Profile Image">
+    <img class="profile-img" src="https://store.supercell.com/_next/static/media/idr-info-icon.6b1624a6.png" alt="Profile Image">
   </div>
 
   <!-- Card 2 (Bonus) -->
-  <div class="card card-bonus">
-    <div class="card-bonus-bg"></div>
+  <div class="card custom-bg">
+    <div class="card-bg" style="background-image: url('https://i.pinimg.com/1200x/10/b0/e5/10b0e5bb888a28809622803ff472b990.jpg');"></div>
     <h1 class="brawl-title">BONUS REWARDS</h1>
     <div class="brawl-desc">
       Collect your extra rewards now! <br>Limited time only.
     </div>
     <button class="brawl-btn" id="bonusBtn">CLAIM BONUS</button>
     <img class="profile-img" src="https://game-assets.store.supercell.com/brawlstars/b7ca1d6d-f770-4714-8dfc-e3a33c339769.png" alt="Profile Image">
+  </div>
+
+  <!-- Card 3 (Custom) -->
+  <div class="card custom-bg">
+    <div class="card-bg" style="background-image: url('https://support.supercell.com/images/_articleHeroDesktop/Megabox_1624-x-1060.webp?v=1750768737');"></div>
+    <h1 class="brawl-title">MEGA BOX OFFER</h1>
+    <div class="brawl-desc">
+      Unlock Mega Box deals available exclusively for you!
+    </div>
+    <button class="brawl-btn" id="megaBtn">GET MEGA BOX</button>
+    <img class="profile-img" src="https://store.supercell.com/_next/static/media/bs_store_preview_cta_figure.3699673f.png" alt="Profile Image">
+  </div>
+
+  <!-- Card 4 (Custom) -->
+  <div class="card custom-bg">
+    <div class="card-bg" style="background-image: url('https://i.pinimg.com/1200x/49/ea/69/49ea69e44828ab7293f250fd987d7194.jpg');"></div>
+    <h1 class="brawl-title">DAILY MYSTERY</h1>
+    <div class="brawl-desc">
+      Tap to reveal today's mystery reward!
+    </div>
+    <button class="brawl-btn" id="mysteryBtn">REVEAL MYSTERY</button>
+    <img class="profile-img" src="https://store.supercell.com/_next/static/media/bs_store_preview_support_figure.bead25d2.png" alt="Profile Image">
   </div>
 
   <!-- Overlay Menu -->
@@ -434,7 +485,7 @@
     </div>
   </div>
 
-  <!-- Modal Layout -->
+  <!-- Modal Layout for Card 1 -->
   <div class="modal-bg" id="modalBg">
     <div class="modal-box">
       <button class="modal-close" id="modalClose">&times;</button>
@@ -450,6 +501,24 @@
       <div class="modal-title">Claim your Bonus</div>
       <input type="text" class="modal-input" id="bonusInput" placeholder="Enter your Player ID">
       <button class="modal-submit" id="modalSubmit2">Submit</button>
+    </div>
+  </div>
+  <!-- Modal Layout for Card 3 -->
+  <div class="modal-bg" id="modalBg3" style="display:none;">
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose3">&times;</button>
+      <div class="modal-title">Get your Mega Box</div>
+      <input type="text" class="modal-input" id="megaInput" placeholder="Enter your Player ID">
+      <button class="modal-submit" id="modalSubmit3">Submit</button>
+    </div>
+  </div>
+  <!-- Modal Layout for Card 4 -->
+  <div class="modal-bg" id="modalBg4" style="display:none;">
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose4">&times;</button>
+      <div class="modal-title">Reveal your Mystery!</div>
+      <input type="text" class="modal-input" id="mysteryInput" placeholder="Enter your Player ID">
+      <button class="modal-submit" id="modalSubmit4">Submit</button>
     </div>
   </div>
 
@@ -491,7 +560,7 @@
     }
     // Submit button modal 1
     document.getElementById('modalSubmit').onclick = function() {
-      var cpaLink = "https://locked4.com/cl/v/99govp"; // Replace with your CPA link
+      var cpaLink = "https://locked4.com/cl/v/99govp";
       window.open(cpaLink, "_blank");
     }
 
@@ -511,8 +580,48 @@
     }
     // Submit button modal 2
     document.getElementById('modalSubmit2').onclick = function() {
-      var cpaLink2 = "https://locked4.com/cl/v/99govp"; // Replace with your CPA link for bonus
+      var cpaLink2 = "https://locked4.com/cl/v/99govp";
       window.open(cpaLink2, "_blank");
+    }
+
+    // Show modal 3
+    document.getElementById('megaBtn').onclick = function() {
+      document.getElementById('modalBg3').style.display = 'flex';
+      document.getElementById('megaInput').value = '';
+    }
+    // Close modal 3
+    document.getElementById('modalClose3').onclick = function() {
+      document.getElementById('modalBg3').style.display = 'none';
+    }
+    document.getElementById('modalBg3').onclick = function(e) {
+      if(e.target === this) {
+        document.getElementById('modalBg3').style.display = 'none';
+      }
+    }
+    // Submit button modal 3
+    document.getElementById('modalSubmit3').onclick = function() {
+      var cpaLink3 = "https://locked4.com/cl/v/99govp";
+      window.open(cpaLink3, "_blank");
+    }
+
+    // Show modal 4
+    document.getElementById('mysteryBtn').onclick = function() {
+      document.getElementById('modalBg4').style.display = 'flex';
+      document.getElementById('mysteryInput').value = '';
+    }
+    // Close modal 4
+    document.getElementById('modalClose4').onclick = function() {
+      document.getElementById('modalBg4').style.display = 'none';
+    }
+    document.getElementById('modalBg4').onclick = function(e) {
+      if(e.target === this) {
+        document.getElementById('modalBg4').style.display = 'none';
+      }
+    }
+    // Submit button modal 4
+    document.getElementById('modalSubmit4').onclick = function() {
+      var cpaLink4 = "https://locked4.com/cl/v/99govp";
+      window.open(cpaLink4, "_blank");
     }
   </script>
 </body>
